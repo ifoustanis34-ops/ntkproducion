@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { contact, primaryPhone } from "@/config/contact";
+import { gaId } from "@/config/analytics";
 import { pageMetadata } from "@/lib/seo";
 import { LegalLayout } from "@/components/shared/LegalLayout";
 
@@ -16,10 +17,26 @@ export default function PrivacyPage() {
   return (
     <LegalLayout title="Politique de confidentialité">
       <h2>Données collectées par ce site</h2>
-      <p>
-        Ce site ne crée pas de compte utilisateur, n&apos;enregistre aucune donnée personnelle sur ses serveurs et n&apos;utilise ni
-        cookie publicitaire ni outil de mesure d&apos;audience.
-      </p>
+      {gaId ? (
+        <>
+          <p>
+            Ce site ne crée pas de compte utilisateur, n&apos;enregistre aucune donnée personnelle sur ses serveurs et n&apos;utilise
+            aucun cookie publicitaire.
+          </p>
+          <h2>Mesure d&apos;audience</h2>
+          <p>
+            Avec votre accord uniquement, ce site utilise Google Analytics 4 pour mesurer sa fréquentation (pages consultées, durée de
+            visite, type d&apos;appareil, provenance géographique approximative). Ces statistiques servent uniquement à améliorer le
+            site. Votre choix est mémorisé dans votre navigateur ; pour le modifier, effacez les données de ce site dans votre
+            navigateur et rechargez la page. Le traitement par Google est régi par sa propre politique de confidentialité.
+          </p>
+        </>
+      ) : (
+        <p>
+          Ce site ne crée pas de compte utilisateur, n&apos;enregistre aucune donnée personnelle sur ses serveurs et n&apos;utilise ni
+          cookie publicitaire ni outil de mesure d&apos;audience.
+        </p>
+      )}
 
       <h2>Formulaire de demande de devis</h2>
       <p>

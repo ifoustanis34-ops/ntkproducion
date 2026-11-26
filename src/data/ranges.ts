@@ -16,6 +16,8 @@ export type ProductRange = {
   quoteLabel: string;
   productCategory?: GalleryCategory;
   image?: string;
+  /** Pages d'activité détaillées (slugs de data/landings.ts) */
+  landings: string[];
 };
 
 export const productRanges: ProductRange[] = [
@@ -33,6 +35,7 @@ export const productRanges: ProductRange[] = [
       "Tentes pliantes",
       "Tentes sur mesure",
     ],
+    landings: ["chapiteaux-et-tentes"],
     quoteLabel: "chapiteaux et tentes événementielles",
     productCategory: "chapiteaux",
   },
@@ -52,6 +55,7 @@ export const productRanges: ProductRange[] = [
       "Abris métalliques",
       "Ossatures métalliques",
     ],
+    landings: ["construction-metallique", "hangars-metalliques"],
     quoteLabel: "hangars et structures métalliques",
     productCategory: "structures-metalliques",
   },
@@ -68,6 +72,7 @@ export const productRanges: ProductRange[] = [
       "Bâches pour chapiteaux",
       "Bâches personnalisées",
     ],
+    landings: ["baches-vip"],
     quoteLabel: "bâches et couvertures",
     image: "chapiteau-evenement-tapis-rouge",
   },
@@ -78,6 +83,7 @@ export const productRanges: ProductRange[] = [
     intro:
       "Tables rondes, rectangulaires, de cérémonie ou de traiteur, et mobilier de réception pour accueillir vos invités dans les meilleures conditions.",
     items: ["Tables rondes", "Tables rectangulaires", "Tables de cérémonie", "Tables de traiteur", "Mobilier de réception"],
+    landings: ["mobilier-evenementiel"],
     quoteLabel: "tables et mobilier événementiel",
     productCategory: "tables",
   },
@@ -87,6 +93,7 @@ export const productRanges: ProductRange[] = [
     shortTitle: "Podiums & scènes",
     intro: "Podiums, estrades, plateformes et structures de scène pour vos concerts, spectacles, cérémonies et animations.",
     items: ["Podiums de spectacle", "Estrades", "Plateformes événementielles", "Structures de scène"],
+    landings: ["podiums-et-scenes"],
     quoteLabel: "podiums et structures de spectacle",
     productCategory: "podiums",
   },

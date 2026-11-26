@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Product } from "@/data/products";
 import { prestationLabels } from "@/data/products";
 import { categoryLabels, getImage } from "@/data/gallery";
@@ -48,7 +49,11 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
       )}
 
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="text-xl font-bold text-navy-900">{product.name}</h3>
+        <h3 className="text-xl font-bold text-navy-900">
+          <Link href={`/produits/${product.slug}`} className="underline-offset-4 hover:text-royal-600 hover:underline">
+            {product.name}
+          </Link>
+        </h3>
         <p className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-muted-foreground">{product.description}</p>
 
         {variant === "catalog" && (

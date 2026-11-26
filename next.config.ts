@@ -7,6 +7,10 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];
 
+/** Domaine principal (sans www) : la version www.<domaine> y est redirigée de façon permanente. */
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+const siteHost = siteUrl ? new URL(siteUrl).host : null;
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
@@ -17,6 +21,17 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 828, 1080, 1280, 1600, 1920],
     imageSizes: [96, 128, 160, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30,
+  },
+  async redirects() {
+    if (!siteHost || siteHost.startsWith("www.") || siteHost.startsWith("localhost")) return [];
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: `www.${siteHost}` }],
+        destination: `${siteUrl!.replace(/\/+$/, "")}/:path*`,
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

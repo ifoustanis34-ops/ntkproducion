@@ -35,7 +35,7 @@ export function Hero() {
       <div className="hero-parallax-content container-site relative pt-[calc(var(--header-h)+3rem)] pb-28 sm:pb-32">
         <p className="hero-fade mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-[0.72rem] font-semibold tracking-[0.22em] text-steel-200 uppercase backdrop-blur-sm" style={{ "--d": "0.1s" } as React.CSSProperties}>
           <span className="size-1.5 rounded-full bg-azure-400" aria-hidden />
-          Fabrication · Vente
+          Fabricant de matériel événementiel et de structures métalliques · Yaoundé
         </p>
         <h1 id="hero-title" className="max-w-4xl text-[2.5rem] leading-[1.02] font-extrabold sm:text-6xl lg:text-7xl xl:text-[5.4rem]">
           {titleWords.map((w, i) => (
@@ -52,8 +52,7 @@ export function Hero() {
           </span>
         </h1>
         <p className="hero-fade mt-7 max-w-2xl text-base leading-relaxed text-steel-200 sm:text-lg" style={{ "--d": "0.75s" } as React.CSSProperties}>
-          Fabrication et vente d’équipements événementiels : nous donnons vie à vos projets grâce à des solutions adaptées à
-          vos événements.
+          Fabrication et vente de chapiteaux, tentes, bâches VIP, tables et podiums, et construction de hangars et structures métalliques sur mesure : nous donnons vie à vos projets au Cameroun.
         </p>
         <div className="hero-fade mt-10 flex flex-col gap-3 sm:flex-row" style={{ "--d": "0.95s" } as React.CSSProperties}>
           <ButtonLink href="/services" size="lg">

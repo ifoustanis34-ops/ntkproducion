@@ -6,7 +6,17 @@ import type { GalleryImage } from "@/data/gallery";
 import { cn } from "@/lib/utils";
 
 /** Photo principale + miniatures cliquables (fondu CSS à chaque changement). */
-export function ProductMedia({ images, productName, badge }: { images: GalleryImage[]; productName: string; badge: React.ReactNode }) {
+export function ProductMedia({
+  images,
+  productName,
+  badge,
+  sizes = "(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw",
+}: {
+  images: GalleryImage[];
+  productName: string;
+  badge?: React.ReactNode;
+  sizes?: string;
+}) {
   const [active, setActive] = useState(0);
   const current = images[active];
   return (
@@ -17,7 +27,7 @@ export function ProductMedia({ images, productName, badge }: { images: GalleryIm
           src={current.src}
           alt={current.alt}
           fill
-          sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
+          sizes={sizes}
           placeholder="blur"
           blurDataURL={current.blurDataURL}
           className={cn("object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.05]", active > 0 && "page-enter")}
@@ -25,6 +35,7 @@ export function ProductMedia({ images, productName, badge }: { images: GalleryIm
         />
         {badge}
       </div>
+      {images.length > 1 && (
       <div className="flex gap-2 px-5 pt-4" role="group" aria-label={`Photos : ${productName}`}>
         {images.map((img, i) => (
           <button
@@ -42,6 +53,7 @@ export function ProductMedia({ images, productName, badge }: { images: GalleryIm
           </button>
         ))}
       </div>
+      )}
     </>
   );
 }

@@ -51,6 +51,10 @@ Après la mise en ligne :
 | Produits du catalogue | `src/data/products.ts` |
 | Domaines d'expertise, services, arguments | `src/data/services.ts` |
 | Menu | `src/data/navigation.ts` |
+| Pages d'activité SEO (chapiteaux, bâches, mobilier, podiums, construction métallique, hangars) | `src/data/landings.ts` |
+| Articles de la rubrique Conseils | `src/data/articles.ts` |
+| Gammes de la page Produits | `src/data/ranges.ts` |
+| Google Analytics 4 (`NEXT_PUBLIC_GA_ID`, avec bandeau de consentement) | `src/config/analytics.ts` |
 
 Toute valeur `null` dans la configuration n'est **jamais affichée** : il suffit de la renseigner
 pour qu'elle apparaisse (footer, contact, données structurées…).

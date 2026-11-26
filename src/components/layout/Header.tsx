@@ -112,7 +112,7 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative inline-flex min-h-10 items-center rounded-full px-3.5 text-[0.92rem] font-medium transition-colors xl:px-4",
+                      "relative inline-flex min-h-10 items-center rounded-full px-2.5 text-[0.92rem] font-medium whitespace-nowrap transition-colors xl:px-4",
                       solid ? "text-navy-900 hover:text-royal-600" : "text-white/90 hover:text-white",
                     )}
                   >
@@ -120,7 +120,7 @@ export function Header() {
                     <span
                       aria-hidden
                       className={cn(
-                        "absolute inset-x-3.5 bottom-1 h-[2px] origin-left rounded-full transition-transform duration-500 ease-out-expo xl:inset-x-4",
+                        "absolute inset-x-2.5 bottom-1 h-[2px] origin-left rounded-full transition-transform duration-500 ease-out-expo xl:inset-x-4",
                         solid ? "bg-royal-600" : "bg-azure-300",
                         active ? "scale-x-100" : "scale-x-0",
                       )}
@@ -139,14 +139,14 @@ export function Header() {
                 rel="noopener noreferrer"
                 aria-label="Écrire à NTK Production sur WhatsApp"
                 className={cn(
-                  "hidden size-11 items-center justify-center rounded-full transition-colors sm:inline-flex",
+                  "hidden size-11 items-center justify-center rounded-full transition-colors sm:inline-flex lg:hidden xl:inline-flex",
                   solid ? "bg-whatsapp/10 text-whatsapp hover:bg-whatsapp hover:text-white" : "bg-white/10 text-white hover:bg-whatsapp",
                 )}
               >
                 <WhatsAppIcon className="size-5" />
               </a>
             )}
-            <Link href="/contact#devis" className={cn(buttonStyles({ variant: "primary", size: "sm" }), "hidden sm:inline-flex")}>
+            <Link href="/contact#devis" className={cn(buttonStyles({ variant: "primary", size: "sm" }), "hidden whitespace-nowrap sm:inline-flex")}>
               Demander un devis
               <ArrowUpRight className="transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
             </Link>

@@ -10,10 +10,10 @@ import { QuickContact } from "@/components/home/QuickContact";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "NTK Production | Chapiteaux, tentes, tables et podiums à Yaoundé",
+  title: "NTK Production | Chapiteaux, tentes et hangars à Yaoundé",
   absoluteTitle: true,
   description:
-    "Fabrication et vente de chapiteaux, tentes événementielles, tables rondes pliables, tables serpentines VIP, podiums et structures métalliques à Yaoundé, Cameroun.",
+    "NTK Production, fabricant à Yaoundé : chapiteaux, tentes, bâches VIP, tables, podiums, hangars et charpentes métalliques. Devis gratuit sur WhatsApp.",
   path: "/",
 });
 

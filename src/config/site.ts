@@ -11,7 +11,7 @@ export const siteConfig = {
   locale: "fr_CM",
   language: "fr",
   description:
-    "NTK Production : fabrication et vente de chapiteaux, tentes événementielles, tables (rondes pliables, serpentines VIP), podiums et structures métalliques à Yaoundé, Cameroun.",
+    "NTK Production, fabricant à Yaoundé (Cameroun) : chapiteaux, tentes événementielles, bâches VIP, tables de cérémonie, podiums, hangars et structures métalliques sur mesure.",
   ogImage: "/images/chapiteaux/chapiteau-evenement-tapis-rouge.jpg",
   logo: "/images/logo/ntk-production-logo.png",
   googleSiteVerification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,

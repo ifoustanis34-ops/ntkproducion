@@ -16,7 +16,7 @@ export const expertises: Expertise[] = [
     description:
       "Chapiteaux à travées, tentes pagode, parois pleines ou transparentes : des abris adaptés à chaque événement.",
     image: "chapiteau-evenement-tapis-rouge",
-    href: "/produits#chapiteaux",
+    href: "/chapiteaux-et-tentes",
   },
   {
     id: "tables",
@@ -24,21 +24,21 @@ export const expertises: Expertise[] = [
     description:
       "Tables rondes pliables, tables serpentines VIP, tables rectangulaires : le mobilier de vos réceptions.",
     image: "table-serpentine-modules",
-    href: "/produits#tables",
+    href: "/mobilier-evenementiel",
   },
   {
     id: "podiums",
     title: "Podiums et équipements",
     description: "Podiums de spectacle pour vos concerts, cérémonies et animations.",
     image: "podium-scene-couverte",
-    href: "/produits#podiums",
+    href: "/podiums-et-scenes",
   },
   {
     id: "structures-metalliques",
-    title: "Structures métalliques",
-    description: "Charpentes, ossatures de hangars et éléments métalliques réalisés en atelier.",
+    title: "Construction métallique",
+    description: "Hangars métalliques, charpentes, ossatures et structures sur mesure, fabriqués en atelier.",
     image: "charpente-metallique-hangar",
-    href: "/produits#structures-metalliques",
+    href: "/construction-metallique",
   },
 ];
 

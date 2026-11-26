@@ -11,9 +11,9 @@ import { whatsappMessages, whatsappUrlFor } from "@/lib/whatsapp";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Contact et devis — NTK Production, Yaoundé",
+  title: "Contact et devis gratuit à Yaoundé",
   description:
-    "Contactez NTK Production au Camp Tunisien, Yaoundé : téléphone, WhatsApp et formulaire de demande de devis pour vos chapiteaux, tentes, tables et podiums.",
+    "Contactez NTK Production au Camp Tunisien, Yaoundé : téléphone, WhatsApp, e-mail et devis gratuit pour chapiteaux, tentes, bâches, tables, podiums et hangars.",
   path: "/contact",
 });
 

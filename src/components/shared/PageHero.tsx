@@ -1,10 +1,10 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Photo } from "@/components/ui/photo";
 import { TrussLine } from "@/components/shared/TrussLine";
 import { getImage } from "@/data/gallery";
-import { absoluteUrl } from "@/config/site";
-import { JsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, JsonLd } from "@/lib/seo";
 
 type Props = {
   eyebrow: string;
@@ -13,23 +13,16 @@ type Props = {
   image: string;
   /** Libellé et chemin de la page courante pour le fil d'Ariane */
   crumb: { label: string; path: string };
+  /** Niveaux intermédiaires du fil d'Ariane (entre Accueil et la page courante) */
+  parents?: { label: string; path: string }[];
   children?: React.ReactNode;
 };
 
-export function PageHero({ eyebrow, title, intro, image, crumb, children }: Props) {
+export function PageHero({ eyebrow, title, intro, image, crumb, parents = [], children }: Props) {
   const img = getImage(image);
   return (
     <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Accueil", item: absoluteUrl("/") },
-            { "@type": "ListItem", position: 2, name: crumb.label, item: absoluteUrl(crumb.path) },
-          ],
-        }}
-      />
+      <JsonLd data={breadcrumbJsonLd([...parents, crumb])} />
       <div className="hero-zoom absolute inset-0 -z-20">
         <Photo image={img} sizes="100vw" preload className="opacity-55" />
       </div>
@@ -38,15 +31,19 @@ export function PageHero({ eyebrow, title, intro, image, crumb, children }: Prop
       <TrussLine className="pointer-events-none absolute right-[-8%] bottom-0 -z-10 hidden w-[50%] text-white/15 lg:block" />
       <div className="container-site pt-[calc(var(--header-h)+3.5rem)] pb-16 sm:pt-[calc(var(--header-h)+5rem)] sm:pb-24">
         <nav aria-label="Fil d'Ariane" className="hero-fade mb-8" style={{ "--d": "0s" } as React.CSSProperties}>
-          <ol className="flex items-center gap-2 text-sm text-steel-300">
-            <li>
-              <Link href="/" className="transition-colors hover:text-white">
-                Accueil
-              </Link>
-            </li>
-            <li aria-hidden>
-              <ChevronRight className="size-3.5" />
-            </li>
+          <ol className="flex flex-wrap items-center gap-2 text-sm text-steel-300">
+            {[{ label: "Accueil", path: "/" }, ...parents].map((p) => (
+              <Fragment key={p.path}>
+                <li>
+                  <Link href={p.path} className="transition-colors hover:text-white">
+                    {p.label}
+                  </Link>
+                </li>
+                <li aria-hidden>
+                  <ChevronRight className="size-3.5" />
+                </li>
+              </Fragment>
+            ))}
             <li aria-current="page" className="text-white">
               {crumb.label}
             </li>

@@ -6,9 +6,9 @@ import { galleryImages } from "@/data/gallery";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Réalisations — chapiteaux, tentes, tables et podiums en images",
+  title: "Réalisations : chapiteaux, tentes, podiums, hangars",
   description:
-    "Portfolio NTK Production : photographies de nos chapiteaux, tentes pagode, tables serpentines VIP, tables rondes pliables, podiums et structures métalliques.",
+    "Photos des réalisations de NTK Production à Yaoundé : chapiteaux, tentes pagode, tables serpentines VIP, podiums, hangars et structures métalliques.",
   path: "/realisations",
   image: "/images/chapiteaux/chapiteau-octogonal-parois-transparentes.jpg",
 });

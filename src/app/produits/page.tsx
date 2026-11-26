@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { Check } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Check } from "lucide-react";
+import { getLanding } from "@/data/landings";
 import { PageHero } from "@/components/shared/PageHero";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/ui/reveal";
@@ -16,9 +18,9 @@ import { JsonLd, pageMetadata } from "@/lib/seo";
 import { getImage } from "@/data/gallery";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Produits — chapiteaux, tentes, hangars métalliques, bâches, tables et podiums",
+  title: "Produits : chapiteaux, tentes, hangars, podiums",
   description:
-    "Les 5 gammes NTK Production à Yaoundé : chapiteaux et tentes événementielles, structures et hangars métalliques, bâches et couvertures, tables et mobilier événementiel, podiums et structures de scène. Devis sur WhatsApp.",
+    "5 gammes NTK Production à Yaoundé : chapiteaux et tentes, hangars et structures métalliques, bâches VIP, tables et mobilier, podiums. Devis sur WhatsApp.",
   path: "/produits",
   image: "/images/tables/table-serpentine-modules.jpg",
 });
@@ -93,9 +95,9 @@ export default function ProductsPage() {
                     title={<span id={`${g.id}-title`}>{g.title}</span>}
                     intro={g.intro}
                   />
-                  {illustration && <RangeItems items={g.items} quote={quote} className="mt-8" />}
+                  {illustration && <RangeItems items={g.items} quote={quote} landings={g.landings} className="mt-8" />}
                 </div>
-                {!illustration && <RangeItems items={g.items} quote={quote} className="lg:pt-10" />}
+                {!illustration && <RangeItems items={g.items} quote={quote} landings={g.landings} className="lg:pt-10" />}
               </div>
 
               {list.length > 0 && (
@@ -120,7 +122,7 @@ export default function ProductsPage() {
 }
 
 /** Liste des prestations d'une gamme + bouton de devis WhatsApp. */
-function RangeItems({ items, quote, className }: { items: string[]; quote: string; className?: string }) {
+function RangeItems({ items, quote, landings, className }: { items: string[]; quote: string; landings: string[]; className?: string }) {
   return (
     <Reveal delay={0.1} className={cn("rounded-3xl border border-steel-200 bg-white p-6 sm:p-7", className)}>
       <h3 className="text-sm font-semibold tracking-[0.14em] text-navy-900 uppercase">Dans cette gamme</h3>
@@ -132,9 +134,16 @@ function RangeItems({ items, quote, className }: { items: string[]; quote: strin
           </li>
         ))}
       </ul>
-      <WhatsAppCta message={quote} className="mt-6 w-full sm:w-auto">
-        Demander un devis
-      </WhatsAppCta>
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6">
+        <WhatsAppCta message={quote} className="w-full sm:w-auto">
+          Demander un devis
+        </WhatsAppCta>
+        {landings.map(getLanding).map((l) => (
+          <Link key={l.slug} href={`/${l.slug}`} className="inline-flex items-center gap-1.5 text-sm font-semibold text-royal-600 underline-offset-4 hover:underline">
+            {l.label} : en savoir plus <ArrowRight className="size-4" />
+          </Link>
+        ))}
+      </div>
     </Reveal>
   );
 }

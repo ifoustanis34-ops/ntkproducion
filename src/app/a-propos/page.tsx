@@ -14,9 +14,9 @@ import { whatsappMessages } from "@/lib/whatsapp";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "À propos — fabricant d'équipements événementiels à Yaoundé",
+  title: "À propos : fabricant à Yaoundé depuis 2016",
   description:
-    "Découvrez NTK Production, entreprise de Yaoundé spécialisée dans la fabrication et la vente de chapiteaux, tentes, tables, podiums et structures métalliques.",
+    "Créée en 2016 au Camp Tunisien à Yaoundé, NTK Production fabrique et vend chapiteaux, tentes, bâches VIP, tables, podiums et structures métalliques.",
   path: "/a-propos",
   image: "/images/chapiteaux/chapiteau-structure-longue.jpg",
 });

@@ -8,12 +8,14 @@ import { FacebookIcon, WhatsAppIcon } from "@/components/ui/brand-icons";
 import { CopyrightYear } from "./CopyrightYear";
 
 const serviceLinks = [
-  { label: "Chapiteaux et tentes", href: "/produits#chapiteaux" },
-  { label: "Structures et hangars métalliques", href: "/produits#structures-metalliques" },
-  { label: "Bâches et couvertures", href: "/produits#baches" },
-  { label: "Tables et mobilier", href: "/produits#tables" },
-  { label: "Podiums et scènes", href: "/produits#podiums" },
+  { label: "Chapiteaux et tentes", href: "/chapiteaux-et-tentes" },
+  { label: "Bâches VIP", href: "/baches-vip" },
+  { label: "Mobilier événementiel", href: "/mobilier-evenementiel" },
+  { label: "Podiums et scènes", href: "/podiums-et-scenes" },
+  { label: "Construction métallique", href: "/construction-metallique" },
+  { label: "Hangars métalliques", href: "/hangars-metalliques" },
   { label: "Fabrication · Vente", href: "/services" },
+  { label: "Zone d'intervention", href: "/zone-intervention" },
 ];
 
 export function Footer() {

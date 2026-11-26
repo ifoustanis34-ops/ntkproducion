@@ -13,9 +13,9 @@ import { pageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Services — fabrication et vente de matériel événementiel",
+  title: "Fabrication de matériel événementiel et métallique",
   description:
-    "Fabrication de chapiteaux et de tentes sur commande, vente de chapiteaux, tentes, bâches VIP, tables et podiums à Yaoundé. Demandez votre devis à NTK Production.",
+    "Fabrication et vente de chapiteaux, tentes, bâches VIP, tables et podiums ; construction de hangars et charpentes métalliques à Yaoundé. Devis gratuit.",
   path: "/services",
   image: "/images/chapiteaux/chapiteau-evenement-tapis-rouge.jpg",
 });

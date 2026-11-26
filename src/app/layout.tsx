@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 import { JsonLd, localBusinessJsonLd } from "@/lib/seo";
 import { RevealScript } from "@/components/layout/RevealScript";
+import { Analytics } from "@/components/analytics/Analytics";
 
 // Archivo (licence OFL) en chasse élargie 112 % : rappelle le lettrage large et géométrique du logo.
 // Instance statique de largeur (axe wdth figé à 112) et graisses 500–900, sous-ensemble latin :
@@ -29,22 +30,22 @@ const body = Manrope({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "NTK Production | Chapiteaux, tentes, tables et podiums à Yaoundé",
+    default: "NTK Production | Chapiteaux, tentes et hangars métalliques à Yaoundé",
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
   keywords: [
     "NTK Production",
-    "fabrication de chapiteaux Cameroun",
-    "vente de chapiteaux Yaoundé",
-    "vente de tentes événementielles",
-    "vente de matériel événementiel",
-    "fabrication de tables événementielles",
-    "tables serpentines VIP",
-    "fabrication de podiums",
-    "structures métalliques Cameroun",
-    "équipements événementiels Yaoundé",
+    "NTK Production Yaoundé",
+    "fabricant de chapiteaux Yaoundé",
+    "fabrication de tentes événementielles Cameroun",
+    "bâches VIP Cameroun",
+    "tables de cérémonie Yaoundé",
+    "fabrication de podiums de spectacle",
+    "construction métallique Yaoundé",
+    "hangars métalliques Cameroun",
+    "charpentes métalliques Yaoundé",
   ],
   authors: [{ name: siteConfig.name }],
   creator: siteConfig.name,
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
           <WhatsAppFloat />
+          <Analytics />
       </body>
     </html>
   );
