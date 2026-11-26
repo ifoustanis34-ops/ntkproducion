@@ -1,0 +1,364 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Charte graphique NTK Production — dérivée du logo :
+ *  - bleu marine profond (lettrage « PRODUCTION », ombres)  → navy
+ *  - bleu royal métallisé (N, T, K, charpente)             → royal
+ *  - reflets azur lumineux                                   → azure
+ *  - acier brossé argenté                                    → steel
+ */
+:root {
+  --navy-950: #040c26;
+  --navy-900: #071740;
+  --navy-800: #0a2160;
+  --navy-700: #0d2f84;
+  --royal-600: #0b4db8;
+  --royal-500: #1464d6;
+  --azure-400: #3d8bff;
+  --azure-300: #7cb1ff;
+  --steel-50: #f5f7fa;
+  --steel-100: #eceff4;
+  --steel-200: #dce1e8;
+  --steel-300: #c3cad4;
+  --steel-400: #9aa3b0;
+  --steel-500: #6f7884;
+  --steel-700: #3d434c;
+  --ink: #0b1430;
+  --whatsapp: #1fae55;
+  --whatsapp-hover: #17944a;
+
+  /* Jetons shadcn/ui alignés sur la charte */
+  --background: #ffffff;
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--royal-600);
+  --primary-foreground: #ffffff;
+  --secondary: var(--steel-100);
+  --secondary-foreground: var(--navy-900);
+  --muted: var(--steel-100);
+  --muted-foreground: #4f5866;
+  --accent: var(--steel-100);
+  --accent-foreground: var(--navy-900);
+  --destructive: #c62828;
+  --border: var(--steel-200);
+  --input: var(--steel-300);
+  --ring: var(--royal-500);
+  --radius: 0.75rem;
+
+  --header-h: 4.5rem;
+  --curve-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-navy-950: var(--navy-950);
+  --color-navy-900: var(--navy-900);
+  --color-navy-800: var(--navy-800);
+  --color-navy-700: var(--navy-700);
+  --color-royal-600: var(--royal-600);
+  --color-royal-500: var(--royal-500);
+  --color-azure-400: var(--azure-400);
+  --color-azure-300: var(--azure-300);
+  --color-steel-50: var(--steel-50);
+  --color-steel-100: var(--steel-100);
+  --color-steel-200: var(--steel-200);
+  --color-steel-300: var(--steel-300);
+  --color-steel-400: var(--steel-400);
+  --color-steel-500: var(--steel-500);
+  --color-steel-700: var(--steel-700);
+  --color-ink: var(--ink);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-hover: var(--whatsapp-hover);
+
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+  --font-display: var(--font-display);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+
+  --ease-out-expo: var(--curve-expo);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--royal-500);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--azure-400);
+    outline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  /* Dégradé acier brossé — reprend le métal argenté du logo */
+  .text-steel-gradient {
+    background: linear-gradient(100deg, #ffffff 0%, #c9d1dc 35%, #8f9aa8 55%, #e9edf2 75%, #b5bfcc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Dégradé bleu métallisé — reprend le N, T, K du logo */
+  .text-royal-gradient {
+    background: linear-gradient(100deg, var(--navy-700) 0%, var(--royal-500) 45%, var(--azure-400) 60%, var(--royal-600) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-royal-metal {
+    background: linear-gradient(135deg, var(--navy-800) 0%, var(--royal-600) 55%, var(--royal-500) 75%, var(--navy-700) 100%);
+  }
+  .bg-steel-line {
+    background: linear-gradient(90deg, transparent, var(--steel-300), #fff, var(--steel-300), transparent);
+  }
+  /* Motif « treillis » discret, rappel de la charpente du logo */
+  .bg-truss {
+    background-image:
+      linear-gradient(60deg, transparent 49.2%, currentColor 49.5%, currentColor 50.5%, transparent 50.8%),
+      linear-gradient(-60deg, transparent 49.2%, currentColor 49.5%, currentColor 50.5%, transparent 50.8%),
+      linear-gradient(0deg, transparent 0 calc(100% - 1px), currentColor calc(100% - 1px));
+    background-size: 64px 56px;
+  }
+  .container-site {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-site {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-site {
+      padding-inline: 2rem;
+    }
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+.animate-scroll-cue {
+  animation: scroll-cue 1.8s var(--curve-expo) infinite;
+}
+
+@keyframes wa-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(31 174 85 / 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgb(31 174 85 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(31 174 85 / 0);
+  }
+}
+.animate-wa-pulse {
+  animation: wa-pulse 2.6s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ——— Hero : entrée en CSS pur (visible sans attendre l'hydratation) ——— */
+@keyframes hero-rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1.02);
+  }
+}
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.hero-word {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.12em;
+  vertical-align: top;
+  padding-bottom: 0.06em;
+}
+.hero-word > span {
+  display: inline-block;
+  animation: hero-rise 0.8s var(--curve-expo) both;
+  animation-delay: calc(0.05s + var(--i, 0) * 0.05s);
+}
+.hero-fade {
+  animation: hero-fade-up 0.9s var(--curve-expo) both;
+  animation-delay: var(--d, 0.6s);
+}
+.hero-zoom {
+  animation: hero-zoom 2.4s var(--curve-expo) both;
+}
+.truss-draw path,
+.truss-draw line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-line 2.2s var(--curve-expo) forwards;
+  animation-delay: 0.5s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-word > span,
+  .hero-fade,
+  .hero-zoom {
+    animation: none;
+  }
+  .truss-draw path,
+  .truss-draw line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ——— Révélation au défilement (voir components/ui/reveal.tsx) ——— */
+[data-js] [data-reveal] {
+  transition:
+    opacity 0.8s var(--curve-expo),
+    transform 0.8s var(--curve-expo);
+  transition-delay: var(--reveal-delay, 0s);
+}
+[data-js] [data-reveal]:not([data-shown]) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] [data-reveal]:not([data-shown]) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ——— Parallaxe du Hero en CSS natif (scroll-driven animations) ——— */
+@keyframes hero-parallax-img {
+  to {
+    transform: translateY(18%);
+  }
+}
+@keyframes hero-parallax-content {
+  to {
+    transform: translateY(30%);
+    opacity: 0;
+  }
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-parallax-img {
+      animation: hero-parallax-img linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100svh;
+    }
+    .hero-parallax-content {
+      animation: hero-parallax-content linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 80svh;
+    }
+  }
+}
+
+/* ——— Transition d'entrée entre les pages ——— */
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.page-enter {
+  animation: page-in 0.45s ease-out both;
+}
