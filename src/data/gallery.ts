@@ -292,9 +292,9 @@ export const galleryImages = gallery.filter((img) => img.inGallery);
 
 export const categoryLabels: Record<GalleryCategory, string> = {
   chapiteaux: "Chapiteaux & tentes",
-  tables: "Tables",
-  podiums: "Podiums",
-  "structures-metalliques": "Structures métalliques",
+  tables: "Tables & mobilier",
+  podiums: "Podiums & scènes",
+  "structures-metalliques": "Structures & hangars",
 };
 
 export type GalleryFilter = {

@@ -9,9 +9,10 @@ import { CopyrightYear } from "./CopyrightYear";
 
 const serviceLinks = [
   { label: "Chapiteaux et tentes", href: "/produits#chapiteaux" },
+  { label: "Structures et hangars métalliques", href: "/produits#structures-metalliques" },
+  { label: "Bâches et couvertures", href: "/produits#baches" },
   { label: "Tables et mobilier", href: "/produits#tables" },
-  { label: "Podiums", href: "/produits#podiums" },
-  { label: "Structures métalliques", href: "/produits#structures-metalliques" },
+  { label: "Podiums et scènes", href: "/produits#podiums" },
   { label: "Fabrication · Vente", href: "/services" },
 ];
 
