@@ -16,14 +16,14 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "À propos — fabricant d'équipements événementiels à Yaoundé",
   description:
-    "Découvrez NTK Production, entreprise de Yaoundé spécialisée dans la fabrication, la vente et la location de chapiteaux, tentes, tables, podiums et structures métalliques.",
+    "Découvrez NTK Production, entreprise de Yaoundé spécialisée dans la fabrication et la vente de chapiteaux, tentes, tables, podiums et structures métalliques.",
   path: "/a-propos",
   image: "/images/chapiteaux/chapiteau-structure-longue.jpg",
 });
 
 const approach = [
   { title: "Écouter", text: "Comprendre la nature de votre événement, le lieu et vos contraintes." },
-  { title: "Orienter", text: "Vous proposer les équipements et la formule — achat, location ou fabrication — qui vous conviennent." },
+  { title: "Orienter", text: "Vous proposer les équipements et la formule — achat ou fabrication sur mesure — qui vous conviennent." },
   { title: "Réaliser", text: "Fabriquer ou préparer le matériel retenu pour votre projet." },
 ];
 
@@ -57,7 +57,7 @@ export default function AboutPage() {
             <SectionHeading
               eyebrow="Présentation"
               title="Un acteur de l'équipement événementiel à Yaoundé."
-              intro="NTK Production intervient dans le secteur de l'événementiel, depuis le Camp Tunisien à Yaoundé. Notre activité repose sur trois métiers complémentaires : la fabrication, la vente et la location d'équipements — chapiteaux, tentes, bâches VIP, tables de cérémonie, podiums de spectacle et structures métalliques."
+              intro="NTK Production intervient dans le secteur de l'événementiel, depuis le Camp Tunisien à Yaoundé. Notre activité repose sur deux métiers complémentaires : la fabrication et la vente d'équipements — chapiteaux, tentes, bâches VIP, tables de cérémonie, podiums de spectacle et structures métalliques."
             />
             {foundedYear && (
               <Reveal className="mt-8 inline-flex items-baseline gap-3 rounded-2xl bg-steel-50 px-5 py-4">

@@ -1,6 +1,6 @@
 # NTK Production — site vitrine
 
-Site vitrine de **NTK Production** (fabrication, vente et location d'équipements événementiels, Yaoundé).
+Site vitrine de **NTK Production** (fabrication et vente d'équipements événementiels, Yaoundé).
 
 - Next.js 16 (App Router, React Server Components, Cache Components) · React 19 · TypeScript strict
 - Tailwind CSS 4 · shadcn/ui (champs de formulaire) · Lucide · Motion (galerie, visionneuse, formulaire)

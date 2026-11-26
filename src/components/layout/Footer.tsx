@@ -12,7 +12,7 @@ const serviceLinks = [
   { label: "Tables et mobilier", href: "/produits#tables" },
   { label: "Podiums", href: "/produits#podiums" },
   { label: "Structures métalliques", href: "/produits#structures-metalliques" },
-  { label: "Fabrication · Vente · Location", href: "/services" },
+  { label: "Fabrication · Vente", href: "/services" },
 ];
 
 export function Footer() {
@@ -34,7 +34,7 @@ export function Footer() {
             />
           </Link>
           <p className="mt-6 max-w-xs text-sm leading-relaxed">
-            Fabrication, vente et location d&apos;équipements événementiels à Yaoundé : chapiteaux, tentes, tables, podiums et
+            Fabrication et vente d&apos;équipements événementiels à Yaoundé : chapiteaux, tentes, tables, podiums et
             structures métalliques.
           </p>
           <div className="mt-6 flex gap-3">

@@ -13,9 +13,9 @@ import { pageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Services — fabrication, vente et location de matériel événementiel",
+  title: "Services — fabrication et vente de matériel événementiel",
   description:
-    "Fabrication de chapiteaux et de tentes sur commande, vente et location de chapiteaux, tentes, bâches VIP, tables et podiums à Yaoundé. Demandez votre devis à NTK Production.",
+    "Fabrication de chapiteaux et de tentes sur commande, vente de chapiteaux, tentes, bâches VIP, tables et podiums à Yaoundé. Demandez votre devis à NTK Production.",
   path: "/services",
   image: "/images/chapiteaux/chapiteau-evenement-tapis-rouge.jpg",
 });
@@ -27,10 +27,10 @@ export default function ServicesPage() {
         eyebrow="Nos services"
         title={
           <>
-            Fabrication, vente <span className="text-steel-gradient">et location.</span>
+            Fabrication <span className="text-steel-gradient">et vente.</span>
           </>
         }
-        intro="Trois métiers distincts et complémentaires pour équiper vos événements : choisissez la formule qui correspond à votre projet."
+        intro="Deux métiers complémentaires pour équiper vos événements : choisissez la formule qui correspond à votre projet."
         image="chapiteau-structure-longue"
         crumb={{ label: "Services", path: "/services" }}
       >

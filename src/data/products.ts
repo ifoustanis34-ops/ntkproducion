@@ -7,12 +7,11 @@ import type { GalleryCategory } from "./gallery";
  * - Pour ajouter un produit : ajouter une entrée (les images référencent les `id` de data/gallery.ts).
  */
 
-export type Prestation = "fabrication" | "vente" | "location";
+export type Prestation = "fabrication" | "vente";
 
 export const prestationLabels: Record<Prestation, string> = {
   fabrication: "Fabrication",
   vente: "Vente",
-  location: "Location",
 };
 
 export type Product = {
@@ -32,7 +31,7 @@ export type Product = {
   technicalSheetUrl?: string;
 };
 
-const all: Prestation[] = ["fabrication", "vente", "location"];
+const all: Prestation[] = ["fabrication", "vente"];
 
 export const products: Product[] = [
   {

@@ -8,7 +8,7 @@ export const whatsappMessages = {
   project:
     "Bonjour NTK Production, j'ai un projet événementiel en préparation et je souhaite vous faire part de mes besoins.",
   chapiteaux:
-    "Bonjour NTK Production, je souhaite obtenir des renseignements concernant vos chapiteaux et les possibilités de location ou de fabrication.",
+    "Bonjour NTK Production, je souhaite obtenir des renseignements concernant vos chapiteaux et les possibilités d'achat ou de fabrication.",
   tables: "Bonjour, je souhaite obtenir des informations concernant vos tables événementielles.",
   podiums: "Bonjour, je souhaite obtenir un devis pour vos podiums événementiels.",
   "structures-metalliques":
@@ -16,8 +16,6 @@ export const whatsappMessages = {
   fabrication:
     "Bonjour NTK Production, je souhaite obtenir un devis pour une fabrication sur mesure.",
   vente: "Bonjour NTK Production, je souhaite obtenir des informations sur l'achat de vos équipements événementiels.",
-  location:
-    "Bonjour NTK Production, je souhaite obtenir des informations sur la location de vos équipements événementiels.",
 } as const;
 
 export type WhatsAppContext = keyof typeof whatsappMessages;

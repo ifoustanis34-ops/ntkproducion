@@ -37,9 +37,9 @@ export const metadata: Metadata = {
   keywords: [
     "NTK Production",
     "fabrication de chapiteaux Cameroun",
-    "location de chapiteaux Yaoundé",
+    "vente de chapiteaux Yaoundé",
     "vente de tentes événementielles",
-    "location de matériel événementiel",
+    "vente de matériel événementiel",
     "fabrication de tables événementielles",
     "tables serpentines VIP",
     "fabrication de podiums",

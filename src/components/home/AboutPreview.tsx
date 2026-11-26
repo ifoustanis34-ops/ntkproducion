@@ -1,4 +1,4 @@
-import { ArrowRight, Factory, KeyRound, ShoppingBag } from "lucide-react";
+import { ArrowRight, Factory, ShoppingBag } from "lucide-react";
 import { Photo } from "@/components/ui/photo";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -8,7 +8,6 @@ import { getImage } from "@/data/gallery";
 const pillars = [
   { icon: Factory, title: "Fabrication", text: "Chapiteaux, tentes, tables et podiums fabriqués, y compris sur commande." },
   { icon: ShoppingBag, title: "Vente", text: "Équipez-vous durablement avec votre propre matériel." },
-  { icon: KeyRound, title: "Location", text: "Louez le matériel nécessaire le temps de votre événement." },
 ];
 
 export function AboutPreview() {
@@ -38,7 +37,7 @@ export function AboutPreview() {
                 <span className="text-royal-gradient">à la hauteur de vos ambitions.</span>
               </span>
             }
-            intro="Basée à Yaoundé, NTK Production conçoit et met à disposition les équipements qui structurent vos événements : chapiteaux, tentes, bâches VIP, tables, podiums et structures métalliques. Parce que nous fabriquons notre matériel, nous pouvons à la fois le vendre, le louer et l'adapter à votre projet."
+            intro="Basée à Yaoundé, NTK Production conçoit et met à disposition les équipements qui structurent vos événements : chapiteaux, tentes, bâches VIP, tables, podiums et structures métalliques. Parce que nous fabriquons notre matériel, nous pouvons à la fois le vendre et l'adapter à votre projet."
           />
           <ul className="mt-10 space-y-4">
             {pillars.map((p, i) => (

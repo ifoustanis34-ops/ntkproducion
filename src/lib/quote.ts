@@ -12,7 +12,7 @@ export type QuoteRequest = {
   message: string;
 };
 
-export const serviceTypes = ["Location", "Achat", "Fabrication sur mesure", "Je ne sais pas encore"] as const;
+export const serviceTypes = ["Achat", "Fabrication sur mesure", "Je ne sais pas encore"] as const;
 
 export const productOptions = [
   "Chapiteau",

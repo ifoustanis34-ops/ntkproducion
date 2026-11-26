@@ -42,9 +42,9 @@ export const expertises: Expertise[] = [
   },
 ];
 
-/** Les trois métiers : fabrication, vente, location (page Services). */
+/** Les deux métiers : fabrication et vente (page Services). */
 export type ServiceLine = {
-  id: "fabrication" | "vente" | "location";
+  id: "fabrication" | "vente";
   eyebrow: string;
   title: string;
   intro: string;
@@ -101,29 +101,6 @@ export const serviceLines: ServiceLine[] = [
     ],
     whatsapp: "vente",
   },
-  {
-    id: "location",
-    eyebrow: "03 — Location",
-    title: "Location de matériel événementiel",
-    intro:
-      "Pour un mariage, une cérémonie, un concert ou une réception, louez le matériel dont vous avez besoin le temps de votre événement.",
-    prestations: [
-      "Location de chapiteaux",
-      "Location de tentes",
-      "Location de bâches VIP",
-      "Location de tables",
-      "Location de podiums",
-      "Location d'équipements événementiels",
-    ],
-    heroImage: "chapiteau-evenement-tapis-rouge",
-    gallery: [
-      "podium-scene-couverte",
-      "table-ronde-et-rectangulaire",
-      "chapiteau-parois-transparentes",
-      "tente-pagode-interieur-drape",
-    ],
-    whatsapp: "location",
-  },
 ];
 
 /** Arguments de différenciation — aucune certification ni statistique inventée. */
@@ -139,9 +116,9 @@ export const strengths = [
     icon: "layers",
   },
   {
-    title: "Vente et location",
-    text: "Achetez votre propre matériel ou louez-le le temps de votre événement : vous choisissez la formule adaptée.",
-    icon: "repeat",
+    title: "Vente directe",
+    text: "Équipez-vous durablement : nous vendons le matériel que nous fabriquons, prêt à servir pour tous vos événements.",
+    icon: "handshake",
   },
   {
     title: "Solutions adaptées",

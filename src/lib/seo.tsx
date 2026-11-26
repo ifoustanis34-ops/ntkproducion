@@ -60,7 +60,7 @@ export function localBusinessJsonLd() {
     ...(sameAs.length ? { sameAs } : {}),
     makesOffer: [
       "Fabrication de chapiteaux",
-      "Location de chapiteaux",
+      "Vente de chapiteaux",
       "Vente de tentes événementielles",
       "Fabrication de tables événementielles",
       "Tables serpentines VIP",
