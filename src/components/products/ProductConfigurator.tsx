@@ -7,6 +7,8 @@ import { Check, Minus, Plus, ShoppingBag } from "lucide-react";
 import type { CatalogPhoto, OptionGroup } from "@/lib/catalog/types";
 import {
   CUSTOM_VALUE,
+  customLabel,
+  customMode,
   describeSelections,
   initialSelections,
   photosFor,
@@ -116,6 +118,7 @@ export function ProductConfigurator({ name, slug, pageUrl, photos, groups, layou
           const s = sel[g.id] ?? { valueId: null, custom: "" };
           const chosenValue = g.values.find((v) => v.id === s.valueId);
           const isCustom = s.valueId === CUSTOM_VALUE;
+          const mode = customMode(g);
           const [L = "", W = "", H = ""] = s.custom.split("|");
           return (
             <fieldset key={g.id}>
@@ -165,7 +168,7 @@ export function ProductConfigurator({ name, slug, pageUrl, photos, groups, layou
                     </button>
                   );
                 })}
-                {g.custom !== "aucune" && g.values.length > 0 && (
+                {mode !== "aucune" && g.values.length > 0 && (
                   <button
                     type="button"
                     onClick={() => set(g.id, { valueId: CUSTOM_VALUE })}
@@ -175,11 +178,11 @@ export function ProductConfigurator({ name, slug, pageUrl, photos, groups, layou
                       isCustom ? "border-royal-600 bg-royal-600 text-white" : "border-dashed border-steel-300 text-navy-900 hover:border-steel-500",
                     )}
                   >
-                    Sur mesure
+                    {customLabel(g)}
                   </button>
                 )}
               </div>
-              {isCustom && g.custom === "dimensions" && (
+              {isCustom && mode === "dimensions" && (
                 <div className="mt-3 grid grid-cols-3 gap-3">
                   {(
                     [
@@ -208,11 +211,11 @@ export function ProductConfigurator({ name, slug, pageUrl, photos, groups, layou
                   ))}
                 </div>
               )}
-              {isCustom && g.custom === "texte" && (
+              {isCustom && mode === "texte" && (
                 <input
                   value={s.custom}
                   maxLength={120}
-                  placeholder="Précisez votre besoin"
+                  placeholder={g.kind === "couleur" ? "Écrivez la couleur souhaitée (ex. bleu nuit)" : "Précisez votre besoin"}
                   aria-label={`${g.name} sur mesure`}
                   onChange={(e) => set(g.id, { custom: e.target.value })}
                   className={cn(inputCls, "mt-3")}

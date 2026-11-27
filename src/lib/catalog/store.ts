@@ -49,7 +49,7 @@ function seedCatalog(): Catalog {
         };
       }),
       options: p.slug === "tables-rondes-pliables" ? [roundTableDiameter()] : [],
-      disabledRangeOptions: [],
+      disabledRangeOptions: p.slug === "tables-rondes-pliables" ? ["dimensions-table"] : [],
       updatedAt: now,
     })),
   };
@@ -116,7 +116,7 @@ function normalize(raw: { version?: number; products: LegacyProduct[]; rangeOpti
       return {
         ...(rest as LegacyProduct),
         options,
-        disabledRangeOptions: p.disabledRangeOptions ?? [],
+        disabledRangeOptions: p.disabledRangeOptions ?? (isRoundTable ? ["dimensions-table"] : []),
         photos: p.photos.map(({ colorId, dimensionId, ...ph }) => ({
           ...ph,
           valueIds: ph.valueIds ?? [colorId, dimensionId].filter((v): v is string => Boolean(v)),

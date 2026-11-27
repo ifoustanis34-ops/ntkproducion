@@ -26,6 +26,20 @@ export type Selections = Record<string, Selection>;
 
 export const CUSTOM_VALUE = "__sur-mesure";
 
+/**
+ * Saisie libre réellement proposée au client : une option « couleur » propose toujours « Autre »
+ * (le client écrit la couleur voulue), même si l'administrateur n'a rien prévu.
+ */
+export function customMode(g: Pick<OptionGroup, "kind" | "custom">): OptionGroup["custom"] {
+  return g.kind === "couleur" && g.custom === "aucune" ? "texte" : g.custom;
+}
+
+/** Libellé du bouton de saisie libre. */
+export function customLabel(g: Pick<OptionGroup, "kind" | "custom">) {
+  if (g.kind === "couleur") return "Autre couleur";
+  return customMode(g) === "dimensions" ? "Saisir mes dimensions" : "Autre (à préciser)";
+}
+
 const num = (v: string) => {
   const n = Number(v.replace(",", ".").trim());
   return Number.isFinite(n) && n > 0 && n <= 500 ? n : null;
@@ -54,9 +68,17 @@ export function describeSelections(groups: OptionGroup[], sel: Selections): { li
     if (s.valueId === CUSTOM_VALUE) {
       const empty = !s.custom.replace(/\|/g, "").trim();
       if (empty && !g.required) continue; // saisie libre facultative laissée vide
-      const text = g.custom === "dimensions" ? formatDimensions(s.custom) : s.custom.trim().slice(0, 120) || null;
-      if (!text) errors.push(g.custom === "dimensions" ? `${g.name} : indiquez la longueur et la largeur (en mètres).` : `${g.name} : précisez votre choix.`);
-      else lines.push(`${g.name} : sur mesure, ${text}`);
+      const mode = customMode(g);
+      const text = mode === "dimensions" ? formatDimensions(s.custom) : s.custom.trim().slice(0, 120) || null;
+      if (!text)
+        errors.push(
+          mode === "dimensions"
+            ? `${g.name} : indiquez la longueur et la largeur (en mètres).`
+            : g.kind === "couleur"
+              ? `${g.name} : précisez la couleur souhaitée.`
+              : `${g.name} : précisez votre choix.`,
+        );
+      else lines.push(g.kind === "couleur" ? `${g.name} : autre couleur, ${text}` : mode === "dimensions" ? `${g.name} : sur mesure, ${text}` : `${g.name} : ${text}`);
       continue;
     }
     const v = g.values.find((x) => x.id === s.valueId);
@@ -73,7 +95,7 @@ export function initialSelections(groups: OptionGroup[]): Selections {
       g.id,
       {
         // Sans valeur prédéfinie, seule la saisie libre est possible : elle est sélectionnée d'office.
-        valueId: g.values.length === 0 && g.custom !== "aucune" ? CUSTOM_VALUE : g.kind === "couleur" ? (g.values[0]?.id ?? null) : null,
+        valueId: g.values.length === 0 && customMode(g) !== "aucune" ? CUSTOM_VALUE : g.kind === "couleur" ? (g.values[0]?.id ?? null) : null,
         custom: "",
       },
     ]),
@@ -157,7 +179,10 @@ export function defaultRangeOptions(): Record<RangeId, OptionGroup[]> {
       },
       { id: "dimensions-bache", name: "Dimensions", kind: "liste", required: true, custom: "dimensions", values: [] },
     ],
-    tables: [],
+    tables: [
+      // Le client peut toujours indiquer les dimensions voulues (désactivée pour les tables rondes, qui ont leur diamètre).
+      { id: "dimensions-table", name: "Dimensions", kind: "liste", required: false, custom: "dimensions", values: [] },
+    ],
     podiums: [{ id: "dimensions-podium", name: "Dimensions", kind: "liste", required: true, custom: "dimensions", values: [] }],
   };
 }
