@@ -12,7 +12,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { getImage } from "@/data/gallery";
 import { getLanding } from "@/data/landings";
 import { absoluteUrl } from "@/config/site";
-import { readCatalogSync, sortProducts } from "@/lib/catalog/store";
+import { readCatalogSync, toShopProducts } from "@/lib/catalog/store";
 import { prestationLabels, rangeLabels, rangeLanding } from "@/lib/catalog/types";
 import { JsonLd, pageMetadata, productJsonLd } from "@/lib/seo";
 
@@ -28,7 +28,7 @@ function productDescription(text: string) {
  * Lecture directe du catalogue (non mise en cache) : une fiche créée ou modifiée dans le portail
  * est visible immédiatement, même si elle n'existait pas au moment de la compilation.
  */
-const published = () => sortProducts(readCatalogSync().products.filter((p) => p.published));
+const published = () => toShopProducts(readCatalogSync());
 
 export function generateStaticParams() {
   return published().map((p) => ({ slug: p.slug }));
@@ -93,11 +93,10 @@ async function Product({ params }: PageProps<"/produits/[slug]">) {
         <div className="container-site">
           <ProductConfigurator
             name={p.name}
+            slug={p.slug}
             pageUrl={absoluteUrl(path)}
             photos={p.photos}
-            colors={p.colors}
-            dimensions={p.dimensions}
-            allowCustomDimensions={p.allowCustomDimensions}
+            groups={p.groups}
           />
         </div>
       </section>

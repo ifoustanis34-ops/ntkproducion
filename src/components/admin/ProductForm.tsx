@@ -1,9 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
 import { saveProductAction, type FormState } from "@/app/admin/actions";
-import type { CatalogColor, CatalogDimension, CatalogProduct, RangeId } from "@/lib/catalog/types";
+import type { CatalogProduct, OptionGroup, RangeId } from "@/lib/catalog/types";
 import { rangeIds, rangeLabels } from "@/lib/catalog/types";
 import { slugify } from "@/lib/catalog/slug";
 import { Input } from "@/components/ui/input";
@@ -11,56 +10,35 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { buttonStyles } from "@/components/ui/button-link";
 import { cn } from "@/lib/utils";
-
-const COLOR_PRESETS: Omit<CatalogColor, "id">[] = [
-  { name: "Blanc", hex: "#ffffff" },
-  { name: "Noir", hex: "#111111" },
-  { name: "Rouge", hex: "#c62828" },
-  { name: "Bordeaux", hex: "#6d1b2b" },
-  { name: "Bleu", hex: "#1565c0" },
-  { name: "Bleu ciel", hex: "#64b5f6" },
-  { name: "Vert", hex: "#2e7d32" },
-  { name: "Jaune", hex: "#f9c80e" },
-  { name: "Doré", hex: "#c9a227" },
-  { name: "Beige", hex: "#e8dcc2" },
-  { name: "Gris", hex: "#9e9e9e" },
-];
-
-const DIMENSION_PRESETS: Record<RangeId, string[]> = {
-  chapiteaux: ["3 × 3 m", "5 × 5 m", "6 × 6 m", "10 × 10 m", "10 × 20 m", "10 × 30 m"],
-  "structures-metalliques": ["10 × 15 m", "15 × 20 m", "20 × 30 m", "20 × 40 m"],
-  baches: ["3 × 4 m", "4 × 6 m", "6 × 8 m", "8 × 10 m"],
-  tables: ["Ø 1,20 m", "Ø 1,50 m", "Ø 1,80 m", "1,80 × 0,75 m", "2,40 × 0,75 m"],
-  podiums: ["4 × 3 m", "6 × 4 m", "8 × 6 m", "10 × 8 m", "12 × 10 m"],
-};
-
-const newId = () => Math.random().toString(16).slice(2, 10).padEnd(8, "0");
+import { OptionGroupsEditor } from "./OptionGroupsEditor";
 
 const field = "h-11";
 
-export function ProductForm({ product, defaultRange }: { product?: CatalogProduct; defaultRange?: RangeId }) {
+export function ProductForm({
+  product,
+  defaultRange,
+  rangeOptions,
+}: {
+  product?: CatalogProduct;
+  defaultRange?: RangeId;
+  /** Options définies pour chaque gamme (portail > Options par gamme) */
+  rangeOptions: Record<RangeId, OptionGroup[]>;
+}) {
   const [state, action, pending] = useActionState<FormState, FormData>(saveProductAction, {});
   const [name, setName] = useState(product?.name ?? "");
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(product));
   const [range, setRange] = useState<RangeId>(product?.range ?? defaultRange ?? "chapiteaux");
-  const [colors, setColors] = useState<CatalogColor[]>(product?.colors ?? []);
-  const [dimensions, setDimensions] = useState<CatalogDimension[]>(product?.dimensions ?? []);
-
-  const addColor = (c: Omit<CatalogColor, "id">) => {
-    if (colors.some((x) => x.name.toLowerCase() === c.name.toLowerCase())) return;
-    setColors([...colors, { id: newId(), ...c }]);
-  };
-  const addDimension = (label: string) => {
-    if (dimensions.some((d) => d.label === label)) return;
-    setDimensions([...dimensions, { id: newId(), label }]);
-  };
+  const [options, setOptions] = useState<OptionGroup[]>(product?.options ?? []);
+  const [disabled, setDisabled] = useState<string[]>(product?.disabledRangeOptions ?? []);
+  const inherited = rangeOptions[range] ?? [];
 
   return (
     <form action={action} className="space-y-8">
       <input type="hidden" name="id" value={product?.id ?? ""} />
-      <input type="hidden" name="colors" value={JSON.stringify(colors)} />
-      <input type="hidden" name="dimensions" value={JSON.stringify(dimensions)} />
+      {disabled.map((id) => (
+        <input key={id} type="hidden" name="disabledRangeOptions" value={id} />
+      ))}
 
       {/* Informations */}
       <section className="space-y-5 rounded-3xl border border-steel-200 bg-white p-5 sm:p-7">
@@ -167,114 +145,58 @@ export function ProductForm({ product, defaultRange }: { product?: CatalogProduc
         </div>
       </section>
 
-      {/* Couleurs */}
-      <section className="space-y-4 rounded-3xl border border-steel-200 bg-white p-5 sm:p-7">
+      {/* Options */}
+      <section className="space-y-5 rounded-3xl border border-steel-200 bg-white p-5 sm:p-7">
         <div>
-          <h2 className="text-lg font-bold text-navy-900">Couleurs proposées</h2>
+          <h2 className="text-lg font-bold text-navy-900">Options proposées au client</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Le visiteur choisit parmi ces couleurs. Vous pourrez ensuite associer des photos à chaque couleur (section Photos).
+            Le client choisit une valeur pour chaque option (couleur, structure, dimensions, diamètre…) avant d&apos;envoyer sa demande.
+            Vous pourrez ensuite associer des photos à chaque valeur (section Photos).
           </p>
         </div>
-        {colors.length > 0 && (
-          <ul className="space-y-2">
-            {colors.map((c, i) => (
-              <li key={c.id} className="flex items-center gap-3">
-                <input
-                  type="color"
-                  aria-label={`Teinte de ${c.name || "la couleur"}`}
-                  value={c.hex}
-                  onChange={(e) => setColors(colors.map((x, j) => (j === i ? { ...x, hex: e.target.value } : x)))}
-                  className="h-11 w-14 cursor-pointer rounded-lg border border-input bg-white p-1"
-                />
-                <Input
-                  aria-label="Nom de la couleur"
-                  value={c.name}
-                  maxLength={40}
-                  onChange={(e) => setColors(colors.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))}
-                  className={cn(field, "flex-1")}
-                />
-                <button
-                  type="button"
-                  onClick={() => setColors(colors.filter((_, j) => j !== i))}
-                  aria-label={`Supprimer ${c.name}`}
-                  className="rounded-lg p-2.5 text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="flex flex-wrap gap-2">
-          {COLOR_PRESETS.filter((p) => !colors.some((c) => c.name === p.name)).map((p) => (
-            <button
-              key={p.name}
-              type="button"
-              onClick={() => addColor(p)}
-              className="inline-flex items-center gap-2 rounded-full border border-steel-200 py-1 pr-3 pl-1 text-sm hover:border-steel-400"
-            >
-              <span className="size-6 rounded-full border border-black/10" style={{ background: p.hex }} />+ {p.name}
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => setColors([...colors, { id: newId(), name: "", hex: "#888888" }])}
-            className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-steel-300 px-3 py-1 text-sm hover:border-steel-500"
-          >
-            <Plus className="size-4" /> Autre couleur
-          </button>
-        </div>
-      </section>
 
-      {/* Dimensions */}
-      <section className="space-y-4 rounded-3xl border border-steel-200 bg-white p-5 sm:p-7">
         <div>
-          <h2 className="text-lg font-bold text-navy-900">Dimensions proposées</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Le visiteur choisit l&apos;une de ces tailles.</p>
+          <h3 className="text-sm font-semibold text-navy-900">Options de la gamme « {rangeLabels[range]} »</h3>
+          {inherited.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Aucune option commune pour cette gamme.{" "}
+              <a href="/admin/options" className="font-medium text-royal-600 underline">
+                Définir les options par gamme
+              </a>
+            </p>
+          ) : (
+            <ul className="mt-2 space-y-2">
+              {inherited.map((g) => (
+                <li key={g.id}>
+                  <label className="flex items-start gap-2 text-sm text-navy-900">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 size-4"
+                      checked={!disabled.includes(g.id)}
+                      onChange={(e) => setDisabled(e.target.checked ? disabled.filter((x) => x !== g.id) : [...disabled, g.id])}
+                    />
+                    <span>
+                      <strong>{g.name}</strong>
+                      <span className="text-muted-foreground"> — {g.values.map((v) => v.label).join(", ") || "saisie libre"}</span>
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="mt-2 text-xs text-muted-foreground">
+            Décochez une option si elle ne concerne pas ce produit. Les valeurs se modifient dans{" "}
+            <a href="/admin/options" className="underline">
+              Options par gamme
+            </a>
+            .
+          </p>
         </div>
-        {dimensions.length > 0 && (
-          <ul className="space-y-2">
-            {dimensions.map((d, i) => (
-              <li key={d.id} className="flex items-center gap-3">
-                <Input
-                  aria-label="Dimension"
-                  value={d.label}
-                  maxLength={40}
-                  onChange={(e) => setDimensions(dimensions.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))}
-                  className={cn(field, "flex-1")}
-                />
-                <button
-                  type="button"
-                  onClick={() => setDimensions(dimensions.filter((_, j) => j !== i))}
-                  aria-label={`Supprimer ${d.label}`}
-                  className="rounded-lg p-2.5 text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="flex flex-wrap gap-2">
-          {DIMENSION_PRESETS[range]
-            .filter((l) => !dimensions.some((d) => d.label === l))
-            .map((l) => (
-              <button key={l} type="button" onClick={() => addDimension(l)} className="rounded-full border border-steel-200 px-3 py-1.5 text-sm hover:border-steel-400">
-                + {l}
-              </button>
-            ))}
-          <button
-            type="button"
-            onClick={() => setDimensions([...dimensions, { id: newId(), label: "" }])}
-            className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-steel-300 px-3 py-1.5 text-sm hover:border-steel-500"
-          >
-            <Plus className="size-4" /> Autre dimension
-          </button>
+
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-navy-900">Options propres à ce produit</h3>
+          <OptionGroupsEditor name="options" groups={options} onChange={setOptions} />
         </div>
-        <label className="flex items-center gap-2 text-sm text-navy-900">
-          <input type="checkbox" name="allowCustomDimensions" defaultChecked={product?.allowCustomDimensions ?? true} className="size-4" />
-          Proposer aussi « Sur mesure » (le visiteur saisit ses propres dimensions)
-        </label>
       </section>
 
       <div className="sticky bottom-4 z-10 flex flex-wrap items-center gap-4 rounded-2xl border border-steel-200 bg-white/95 p-4 shadow-lg backdrop-blur">

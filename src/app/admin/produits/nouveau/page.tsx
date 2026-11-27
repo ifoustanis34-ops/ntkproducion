@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { requireAdmin } from "@/lib/admin/auth";
 import { isRangeId } from "@/lib/catalog/types";
 import { ProductForm } from "@/components/admin/ProductForm";
+import { readCatalogSync } from "@/lib/catalog/store";
 
 export const metadata: Metadata = { title: "Nouveau produit" };
 
@@ -26,7 +27,7 @@ async function NewProduct({ searchParams }: { searchParams: PageProps<"/admin/pr
       </Link>
       <h1 className="mt-3 text-3xl font-bold text-navy-900">Nouveau produit</h1>
       <p className="mt-1 mb-8 text-muted-foreground">Créez le produit, puis ajoutez ses photos sur la page suivante.</p>
-      <ProductForm defaultRange={isRangeId(gamme) ? gamme : undefined} />
+      <ProductForm defaultRange={isRangeId(gamme) ? gamme : undefined} rangeOptions={readCatalogSync().rangeOptions} />
     </div>
   );
 }

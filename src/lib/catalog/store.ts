@@ -3,7 +3,8 @@ import path from "node:path";
 import { cacheLife, cacheTag } from "next/cache";
 import { products as seedProducts } from "@/data/products";
 import { getImage } from "@/data/gallery";
-import type { Catalog, CatalogProduct } from "./types";
+import { defaultRangeOptions, effectiveOptions } from "./options";
+import { rangeIds, type Catalog, type CatalogProduct, type OptionGroup } from "./types";
 
 /**
  * Stockage du catalogue : un fichier JSON + un dossier de photos, hors du code.
@@ -19,7 +20,8 @@ export const CATALOG_TAG = "catalogue";
 function seedCatalog(): Catalog {
   const now = new Date(0).toISOString();
   return {
-    version: 1,
+    version: 2,
+    rangeOptions: defaultRangeOptions(),
     products: seedProducts.map((p, i) => ({
       id: p.slug,
       slug: p.slug,
@@ -43,15 +45,84 @@ function seedCatalog(): Catalog {
           alt: g.alt,
           blurDataURL: g.blurDataURL,
           focus: g.focus,
-          colorId: null,
-          dimensionId: null,
+          valueIds: [],
         };
       }),
-      colors: [],
-      dimensions: [],
-      allowCustomDimensions: true,
+      options: p.slug === "tables-rondes-pliables" ? [roundTableDiameter()] : [],
+      disabledRangeOptions: [],
       updatedAt: now,
     })),
+  };
+}
+
+/** Diamètre des tables rondes (valeur de départ confirmée : Ø 150 cm pour 10 places). */
+function roundTableDiameter(): OptionGroup {
+  return {
+    id: "diametre",
+    name: "Diamètre",
+    kind: "liste",
+    required: true,
+    custom: "texte",
+    values: [{ id: "d-150", label: "Ø 150 cm", note: "10 places" }],
+  };
+}
+
+/* Ancien format (v1) : couleurs et dimensions fixes par produit. */
+type LegacyProduct = Omit<CatalogProduct, "options" | "disabledRangeOptions" | "photos"> & {
+  photos: (CatalogProduct["photos"][number] & { colorId?: string | null; dimensionId?: string | null })[];
+  colors?: { id: string; name: string; hex: string }[];
+  dimensions?: { id: string; label: string }[];
+  allowCustomDimensions?: boolean;
+  options?: OptionGroup[];
+  disabledRangeOptions?: string[];
+};
+
+/**
+ * Met un catalogue lu sur disque au format courant (v2). Les couleurs et dimensions de l'ancien format
+ * deviennent des options du produit, en gardant leurs identifiants : les photos restent associées.
+ */
+function normalize(raw: { version?: number; products: LegacyProduct[]; rangeOptions?: Catalog["rangeOptions"] }): Catalog {
+  const defaults = defaultRangeOptions();
+  const rangeOptions = Object.fromEntries(rangeIds.map((r) => [r, raw.rangeOptions?.[r] ?? defaults[r]])) as Catalog["rangeOptions"];
+  if (raw.version === 2) return { version: 2, products: raw.products as CatalogProduct[], rangeOptions };
+  return {
+    version: 2,
+    rangeOptions,
+    products: raw.products.map((p) => {
+      const options: OptionGroup[] = [...(p.options ?? [])];
+      if (p.colors?.length) {
+        options.push({ id: "couleur", name: "Couleur", kind: "couleur", required: false, custom: "aucune", values: p.colors.map((c) => ({ id: c.id, label: c.name, hex: c.hex })) });
+      }
+      const isRoundTable = p.slug === "tables-rondes-pliables";
+      const rangeHasDimensions = (rangeOptions[p.range] ?? []).some((g) => /dimension/i.test(g.name));
+      if (p.dimensions?.length) {
+        options.push({
+          id: "dimensions",
+          name: "Dimensions",
+          kind: "liste",
+          required: true,
+          custom: p.allowCustomDimensions ? "dimensions" : "aucune",
+          values: p.dimensions.map((d) => ({ id: d.id, label: d.label })),
+        });
+      } else if (p.allowCustomDimensions && !rangeHasDimensions && !isRoundTable) {
+        // Ancien « sur mesure » seul : gardé uniquement si la gamme ne propose pas déjà des dimensions.
+        options.push({ id: "dimensions", name: "Dimensions", kind: "liste", required: false, custom: "dimensions", values: [] });
+      }
+      if (isRoundTable && !options.some((g) => /diam/i.test(g.name))) options.unshift(roundTableDiameter());
+      const rest: Partial<LegacyProduct> = { ...p };
+      delete rest.colors;
+      delete rest.dimensions;
+      delete rest.allowCustomDimensions;
+      return {
+        ...(rest as LegacyProduct),
+        options,
+        disabledRangeOptions: p.disabledRangeOptions ?? [],
+        photos: p.photos.map(({ colorId, dimensionId, ...ph }) => ({
+          ...ph,
+          valueIds: ph.valueIds ?? [colorId, dimensionId].filter((v): v is string => Boolean(v)),
+        })),
+      };
+    }),
   };
 }
 
@@ -66,7 +137,7 @@ export function readCatalogSync(): Catalog {
     return seedCatalog();
   }
   if (memo && memo.mtimeMs === mtimeMs) return memo.catalog;
-  const catalog = JSON.parse(readFileSync(catalogFile, "utf8")) as Catalog;
+  const catalog = normalize(JSON.parse(readFileSync(catalogFile, "utf8")));
   memo = { mtimeMs, catalog };
   return catalog;
 }
@@ -103,13 +174,18 @@ export async function getCatalog(): Promise<Catalog> {
   return readCatalogSync();
 }
 
-export async function getPublishedProducts(): Promise<CatalogProduct[]> {
-  const { products } = await getCatalog();
-  return products.filter((p) => p.published).sort(byOrder);
+/** Produit publié avec ses options effectives (gamme + produit). */
+export type ShopProduct = CatalogProduct & { groups: OptionGroup[] };
+
+export function toShopProducts(catalog: Catalog): ShopProduct[] {
+  return catalog.products
+    .filter((p) => p.published)
+    .sort(byOrder)
+    .map((p) => ({ ...p, groups: effectiveOptions(p, catalog.rangeOptions) }));
 }
 
-export async function getPublishedProduct(slug: string): Promise<CatalogProduct | undefined> {
-  return (await getPublishedProducts()).find((p) => p.slug === slug);
+export async function getPublishedProducts(): Promise<ShopProduct[]> {
+  return toShopProducts(await getCatalog());
 }
 
 export function sortProducts(list: CatalogProduct[]) {

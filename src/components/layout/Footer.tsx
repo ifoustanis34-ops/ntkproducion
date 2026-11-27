@@ -14,6 +14,7 @@ const serviceLinks = [
   { label: "Podiums et scènes", href: "/podiums-et-scenes" },
   { label: "Construction métallique", href: "/construction-metallique" },
   { label: "Hangars métalliques", href: "/hangars-metalliques" },
+  { label: "Passer la commande", href: "/commande" },
   { label: "Fabrication · Vente", href: "/services" },
   { label: "Zone d'intervention", href: "/zone-intervention" },
 ];

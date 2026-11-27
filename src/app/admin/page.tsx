@@ -33,9 +33,14 @@ async function ProductList() {
             immédiatement.
           </p>
         </div>
-        <Link href="/admin/produits/nouveau" className={buttonStyles({ variant: "primary" })}>
-          <Plus /> Nouveau produit
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/options" className={buttonStyles({ variant: "outline" })}>
+            Options par gamme
+          </Link>
+          <Link href="/admin/produits/nouveau" className={buttonStyles({ variant: "primary" })}>
+            <Plus /> Nouveau produit
+          </Link>
+        </div>
       </div>
 
       <div className="mt-10 space-y-10">
@@ -72,10 +77,7 @@ async function ProductList() {
                           <span className={p.published ? "text-green-700" : "text-amber-700"}>{p.published ? "● Publié" : "● Masqué"}</span>
                           {p.featured && <span>★ Accueil</span>}
                           <span>{p.photos.length} photo(s)</span>
-                          <span>{p.colors.length} couleur(s)</span>
-                          <span>
-                            {p.dimensions.length} dimension(s){p.allowCustomDimensions ? " + sur mesure" : ""}
-                          </span>
+                          <span>{p.options.length} option(s) propre(s)</span>
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">

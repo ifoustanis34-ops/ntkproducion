@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 import { RevealScript } from "@/components/layout/RevealScript";
 import { Analytics } from "@/components/analytics/Analytics";
+import { CartPill } from "@/components/order/CartPill";
 import { JsonLd, localBusinessJsonLd } from "@/lib/seo";
 
 /** Habillage du site public (le portail /admin a son propre layout). */
@@ -20,6 +21,9 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <Suspense fallback={null}>
+        <CartPill />
+      </Suspense>
       <Analytics />
     </>
   );

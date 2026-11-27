@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { CatalogProduct } from "@/lib/catalog/types";
+import type { CatalogProduct, OptionGroup } from "@/lib/catalog/types";
 import { prestationLabels, rangeLabels } from "@/lib/catalog/types";
 import { productQuoteMessage, whatsappUrl } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/ui/brand-icons";
@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 import { ProductMedia } from "./ProductMedia";
 
 type Props = {
-  product: CatalogProduct;
+  /** Produit et, si connues, ses options effectives (gamme + produit) */
+  product: CatalogProduct & { groups?: OptionGroup[] };
   /** "catalog" : photos secondaires, couleurs, dimensions et type de prestation */
   variant?: "compact" | "catalog";
   ctaLabel?: string;
@@ -22,8 +23,10 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
   const images = variant === "catalog" ? product.photos.slice(0, 6) : main ? [main] : [];
   const wa = whatsappUrl(productQuoteMessage(product.messageLabel));
   const prestations = product.prestations.length ? product.prestations.map((p) => prestationLabels[p]).join(" · ") : null;
-  // Dès qu'un choix existe (couleur, taille ou sur mesure), le bouton mène à la fiche où le client le fait.
-  const configurable = product.colors.length > 0 || product.dimensions.length > 0 || product.allowCustomDimensions;
+  const groups = product.groups ?? product.options;
+  const colorGroup = groups.find((g) => g.kind === "couleur" && g.values.length > 0);
+  // Dès qu'une option existe, le bouton mène à la fiche où le client fait ses choix.
+  const configurable = groups.length > 0;
   const badge = (
     <span className="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-[0.7rem] font-semibold tracking-wide text-navy-900 backdrop-blur">
       {rangeLabels[product.range]}
@@ -59,14 +62,14 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
         </h3>
         <p className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-muted-foreground">{product.description}</p>
 
-        {product.colors.length > 0 && (
-          <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label="Couleurs disponibles">
-            {product.colors.slice(0, 8).map((c) => (
-              <li key={c.id} title={c.name} className="size-5 rounded-full border border-steel-300" style={{ background: c.hex }}>
-                <span className="sr-only">{c.name}</span>
+        {colorGroup && (
+          <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label={`${colorGroup.name} disponibles`}>
+            {colorGroup.values.slice(0, 8).map((c) => (
+              <li key={c.id} title={c.label} className="size-5 rounded-full border border-steel-300" style={{ background: c.hex }}>
+                <span className="sr-only">{c.label}</span>
               </li>
             ))}
-            {product.colors.length > 8 && <li className="text-xs text-muted-foreground">+{product.colors.length - 8}</li>}
+            {colorGroup.values.length > 8 && <li className="text-xs text-muted-foreground">+{colorGroup.values.length - 8}</li>}
           </ul>
         )}
 
@@ -77,14 +80,8 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
               <dd className="mt-0.5 font-semibold text-navy-900">{prestations ?? "À confirmer"}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Dimensions</dt>
-              <dd className="mt-0.5 font-semibold text-navy-900">
-                {product.dimensions.length
-                  ? `${product.dimensions.length} taille${product.dimensions.length > 1 ? "s" : ""}${product.allowCustomDimensions ? " + sur mesure" : ""}`
-                  : product.allowCustomDimensions
-                    ? "Sur mesure"
-                    : "Sur demande"}
-              </dd>
+              <dt className="text-xs text-muted-foreground">Options</dt>
+              <dd className="mt-0.5 font-semibold text-navy-900">{groups.length ? groups.map((g) => g.name).join(", ") : "Sur demande"}</dd>
             </div>
           </dl>
         )}
@@ -97,7 +94,7 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
             href={href}
             className={cn(buttonStyles({ variant: variant === "catalog" ? "primary" : "outline", size: "md" }), "mt-6 w-full")}
           >
-            {product.colors.length > 0 ? "Choisir couleur et dimensions" : "Choisir les dimensions"}
+            {colorGroup ? "Choisir couleurs et options" : "Choisir les options"}
           </Link>
         ) : (
           <a

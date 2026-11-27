@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Fragment } from "react";
-import { ArrowDown, ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight, ShoppingBag } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button-link";
 import { TrussLine } from "@/components/shared/TrussLine";
 import { imageMeta } from "@/data/image-meta";
@@ -54,8 +54,11 @@ export function Hero() {
         <p className="hero-fade mt-7 max-w-2xl text-base leading-relaxed text-steel-200 sm:text-lg" style={{ "--d": "0.75s" } as React.CSSProperties}>
           Fabrication et vente de chapiteaux, tentes, bâches VIP, tables et podiums, et construction de hangars et structures métalliques sur mesure : nous donnons vie à vos projets au Cameroun.
         </p>
-        <div className="hero-fade mt-10 flex flex-col gap-3 sm:flex-row" style={{ "--d": "0.95s" } as React.CSSProperties}>
-          <ButtonLink href="/services" size="lg">
+        <div className="hero-fade mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap" style={{ "--d": "0.95s" } as React.CSSProperties}>
+          <ButtonLink href="/commande" size="lg">
+            <ShoppingBag /> Passer la commande
+          </ButtonLink>
+          <ButtonLink href="/services" variant="outlineLight" size="lg">
             Découvrir nos services
             <ArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-1" />
           </ButtonLink>

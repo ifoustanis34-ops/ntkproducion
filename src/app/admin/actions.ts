@@ -11,11 +11,12 @@ import { CATALOG_TAG, mutateCatalog, readCatalogSync, uploadsDir } from "@/lib/c
 import { slugify } from "@/lib/catalog/slug";
 import {
   isRangeId,
-  type CatalogColor,
-  type CatalogDimension,
+  type Catalog,
   type CatalogPhoto,
   type CatalogProduct,
+  type OptionGroup,
   type Prestation,
+  type RangeId,
 } from "@/lib/catalog/types";
 
 export type FormState = { ok?: boolean; error?: string; message?: string };
@@ -58,37 +59,49 @@ export async function logoutAction() {
 
 /* ---------- Produits ---------- */
 
-function parseColors(raw: string): CatalogColor[] {
+const ID = /^[a-z0-9][a-z0-9-]{1,40}$/;
+const HEX = /^#[0-9a-fA-F]{6}$/;
+
+/** Valide les options envoyées par le formulaire (JSON) : noms, types, valeurs, identifiants. */
+function parseOptionGroups(raw: string): OptionGroup[] {
+  let arr: unknown;
   try {
-    const arr = JSON.parse(raw) as unknown[];
-    return arr
-      .slice(0, 30)
-      .map((c) => c as Partial<CatalogColor>)
-      .filter((c) => typeof c.name === "string" && c.name.trim())
-      .map((c) => ({
-        id: typeof c.id === "string" && /^[a-z0-9]{4,16}$/.test(c.id) ? c.id : rid(),
-        name: c.name!.trim().slice(0, 40),
-        hex: typeof c.hex === "string" && /^#[0-9a-fA-F]{6}$/.test(c.hex) ? c.hex.toLowerCase() : "#ffffff",
-      }));
+    arr = JSON.parse(raw);
   } catch {
     return [];
   }
+  if (!Array.isArray(arr)) return [];
+  const seen = new Set<string>();
+  const uid = (v: unknown) => {
+    let id = typeof v === "string" && ID.test(v) && !seen.has(v) ? v : rid();
+    while (seen.has(id)) id = rid();
+    seen.add(id);
+    return id;
+  };
+  return arr.slice(0, 20).flatMap((g): OptionGroup[] => {
+    const x = g as Partial<OptionGroup>;
+    const name = String(x.name ?? "").trim().slice(0, 60);
+    if (!name) return [];
+    const kind = x.kind === "couleur" ? "couleur" : "liste";
+    const custom = x.custom === "texte" || x.custom === "dimensions" ? x.custom : "aucune";
+    const values = (Array.isArray(x.values) ? x.values : [])
+      .slice(0, 40)
+      .map((v) => v as Partial<OptionGroup["values"][number]>)
+      .filter((v) => String(v.label ?? "").trim())
+      .map((v) => ({
+        id: uid(v.id),
+        label: String(v.label).trim().slice(0, 60),
+        ...(kind === "couleur" ? { hex: typeof v.hex === "string" && HEX.test(v.hex) ? v.hex.toLowerCase() : "#ffffff" } : {}),
+        ...(String(v.note ?? "").trim() ? { note: String(v.note).trim().slice(0, 60) } : {}),
+      }));
+    return [{ id: uid(x.id), name, kind, required: Boolean(x.required), custom, values }];
+  });
 }
 
-function parseDimensions(raw: string): CatalogDimension[] {
-  try {
-    const arr = JSON.parse(raw) as unknown[];
-    return arr
-      .slice(0, 40)
-      .map((d) => d as Partial<CatalogDimension>)
-      .filter((d) => typeof d.label === "string" && d.label.trim())
-      .map((d) => ({
-        id: typeof d.id === "string" && /^[a-z0-9]{4,16}$/.test(d.id) ? d.id : rid(),
-        label: d.label!.trim().slice(0, 40),
-      }));
-  } catch {
-    return [];
-  }
+/** Retire des photos les valeurs d'options qui n'existent plus. */
+function prunePhotoValues(c: Catalog, product: CatalogProduct) {
+  const valid = new Set([...(c.rangeOptions[product.range] ?? []), ...product.options].flatMap((g) => g.values.map((v) => v.id)));
+  product.photos.forEach((ph) => (ph.valueIds = ph.valueIds.filter((v) => valid.has(v))));
 }
 
 export async function saveProductAction(_prev: FormState, fd: FormData): Promise<FormState> {
@@ -104,8 +117,8 @@ export async function saveProductAction(_prev: FormState, fd: FormData): Promise
   const slug = slugify(str(fd, "slug", 80) || name);
   if (!slug) return { error: "Adresse de la page invalide." };
   const prestations = (["fabrication", "vente"] as Prestation[]).filter((p) => fd.get(`prestation-${p}`) === "on");
-  const colors = parseColors(String(fd.get("colors") ?? "[]"));
-  const dimensions = parseDimensions(String(fd.get("dimensions") ?? "[]"));
+  const options = parseOptionGroups(String(fd.get("options") ?? "[]"));
+  const disabledRangeOptions = fd.getAll("disabledRangeOptions").map(String).filter((v) => ID.test(v)).slice(0, 40);
 
   const fields = {
     slug,
@@ -122,9 +135,8 @@ export async function saveProductAction(_prev: FormState, fd: FormData): Promise
     prestations,
     featured: fd.get("featured") === "on",
     published: fd.get("published") === "on",
-    colors,
-    dimensions,
-    allowCustomDimensions: fd.get("allowCustomDimensions") === "on",
+    options,
+    disabledRangeOptions,
     updatedAt: new Date().toISOString(),
   } satisfies Partial<CatalogProduct>;
 
@@ -135,14 +147,8 @@ export async function saveProductAction(_prev: FormState, fd: FormData): Promise
       const p = c.products.find((x) => x.id === id);
       if (!p) return { error: "Produit introuvable." };
       previousSlug = p.slug;
-      const colorIds = new Set(colors.map((x) => x.id));
-      const dimIds = new Set(dimensions.map((x) => x.id));
       Object.assign(p, fields);
-      // Une couleur ou une dimension supprimée libère les photos qui y étaient associées.
-      p.photos.forEach((ph) => {
-        if (ph.colorId && !colorIds.has(ph.colorId)) ph.colorId = null;
-        if (ph.dimensionId && !dimIds.has(ph.dimensionId)) ph.dimensionId = null;
-      });
+      prunePhotoValues(c, p); // une valeur supprimée libère les photos qui y étaient associées
       return { id };
     }
     const newId = rid(6);
@@ -184,6 +190,22 @@ export async function moveProductAction(id: string, dir: -1 | 1) {
   refresh();
 }
 
+/* ---------- Options par gamme ---------- */
+
+export async function saveRangeOptionsAction(range: RangeId, _prev: FormState, fd: FormData): Promise<FormState> {
+  await requireAdmin();
+  if (!isRangeId(range)) return { error: "Gamme inconnue." };
+  const groups = parseOptionGroups(String(fd.get("options") ?? "[]"));
+  const slugs = await mutateCatalog((c) => {
+    c.rangeOptions[range] = groups;
+    const affected = c.products.filter((p) => p.range === range);
+    affected.forEach((p) => prunePhotoValues(c, p));
+    return affected.map((p) => p.slug);
+  });
+  refresh(...slugs);
+  return { ok: true, message: "Options enregistrées. Elles s'appliquent à tous les produits de la gamme." };
+}
+
 /* ---------- Photos ---------- */
 
 async function removeFile(ph: CatalogPhoto) {
@@ -198,8 +220,7 @@ export async function uploadPhotoAction(productId: string, fd: FormData): Promis
   const file = fd.get("photo");
   if (!(file instanceof File) || file.size === 0) return { error: "Aucun fichier reçu." };
   if (file.size > MAX_UPLOAD) return { error: "Photo trop lourde (8 Mo maximum)." };
-  const colorId = String(fd.get("colorId") ?? "") || null;
-  const dimensionId = String(fd.get("dimensionId") ?? "") || null;
+  const requested = fd.getAll("valueIds").map(String);
 
   let out: { data: Buffer; info: OutputInfo };
   let blur: Buffer;
@@ -220,9 +241,10 @@ export async function uploadPhotoAction(productId: string, fd: FormData): Promis
   if (!product) return { error: "Produit introuvable." };
   if (product.photos.length >= 40) return { error: "40 photos maximum par produit." };
 
-  const color = product.colors.find((x) => x.id === colorId);
-  const dim = product.dimensions.find((x) => x.id === dimensionId);
-  const base = slugify([product.slug, color?.name, dim?.label].filter(Boolean).join(" ")).slice(0, 100);
+  const catalog = readCatalogSync();
+  const groups = [...(catalog.rangeOptions[product.range] ?? []), ...product.options];
+  const values = groups.flatMap((g) => g.values).filter((v) => requested.includes(v.id));
+  const base = slugify([product.slug, ...values.map((v) => v.label)].join(" ")).slice(0, 100);
   const filename = `${base}-ntk-production-yaounde-${rid(3)}.webp`;
   await mkdir(uploadsDir, { recursive: true });
   await writeFile(path.join(uploadsDir, filename), out.data);
@@ -232,10 +254,9 @@ export async function uploadPhotoAction(productId: string, fd: FormData): Promis
     src: `/media/${filename}`,
     width: out.info.width,
     height: out.info.height,
-    alt: [product.name, color?.name.toLowerCase(), dim ? `(${dim.label})` : null].filter(Boolean).join(" ") + " — NTK Production, Yaoundé",
+    alt: [product.name, ...values.map((v) => v.label.toLowerCase())].join(" ") + " — NTK Production, Yaoundé",
     blurDataURL: `data:image/webp;base64,${blur.toString("base64")}`,
-    colorId: color ? color.id : null,
-    dimensionId: dim ? dim.id : null,
+    valueIds: values.map((v) => v.id),
   };
 
   const saved = await mutateCatalog((c) => {
@@ -256,7 +277,7 @@ export async function uploadPhotoAction(productId: string, fd: FormData): Promis
 export async function updatePhotoAction(
   productId: string,
   photoId: string,
-  data: { alt: string; colorId: string | null; dimensionId: string | null },
+  data: { alt: string; valueIds: string[] },
 ): Promise<{ error?: string }> {
   await requireAdmin();
   const ok = await mutateCatalog((c) => {
@@ -264,8 +285,8 @@ export async function updatePhotoAction(
     const ph = p?.photos.find((x) => x.id === photoId);
     if (!p || !ph) return false;
     ph.alt = String(data.alt ?? "").trim().slice(0, 200) || ph.alt;
-    ph.colorId = p.colors.some((x) => x.id === data.colorId) ? data.colorId : null;
-    ph.dimensionId = p.dimensions.some((x) => x.id === data.dimensionId) ? data.dimensionId : null;
+    ph.valueIds = Array.isArray(data.valueIds) ? data.valueIds.map(String).slice(0, 10) : [];
+    prunePhotoValues(c, p);
     p.updatedAt = new Date().toISOString();
     return true;
   });

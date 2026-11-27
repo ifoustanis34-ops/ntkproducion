@@ -81,14 +81,20 @@ Accessible sur `https://<domaine>/admin` (non indexé par Google). Un seul compt
 dans `.env.production.local` : `ADMIN_USERNAME` (défaut `admin`) et `ADMIN_PASSWORD` (12 caractères minimum).
 Sans `ADMIN_PASSWORD`, le portail reste fermé.
 
-L'administrateur peut, pour chaque produit de chaque gamme :
-- créer / modifier / masquer / supprimer / réordonner le produit ;
-- définir les **couleurs** (nom + teinte) et les **dimensions** proposées, et autoriser le « sur mesure » ;
+L'administrateur peut :
+- créer / modifier / masquer / supprimer / réordonner les produits de chaque gamme ;
+- définir des **options** (« Couleur de la bâche », « Structure », « Dimensions », « Diamètre »…), de type
+  *couleurs* (pastilles) ou *liste de choix*, obligatoires ou non, avec saisie « sur mesure » facultative :
+  - **par gamme** (`/admin/options`) : elles s'appliquent à tous les produits de la gamme (désactivables par produit) ;
+  - **par produit** : options propres (ex. diamètre des tables rondes, Ø 150 cm = 10 places) ;
 - ajouter des **photos** (réduites dans le navigateur puis converties en WebP, nommées pour le référencement),
-  et associer chaque photo à une couleur et/ou une dimension.
+  et associer chaque photo à une ou plusieurs valeurs d'options.
 
-Côté visiteur, la fiche produit (`/produits/<slug>`) permet de choisir couleur, dimension (ou sur mesure) et quantité,
-puis prépare la demande de devis dans WhatsApp.
+Côté visiteur :
+- la fiche produit (`/produits/<slug>`) permet de choisir les options et la quantité, puis d'**ajouter à la commande**
+  ou de demander ce produit seul sur WhatsApp ;
+- la page **Commande** (`/commande`, bouton « Passer la commande » de l'accueil) présente tous les produits par
+  catégorie ; la commande (conservée dans le navigateur) part en **un seul message WhatsApp**.
 
 Données : `NTK_DATA_DIR` (défaut `<projet>/.data`) contient `catalog.json` et `uploads/`. Ce dossier n'est pas
 dans Git : **le sauvegarder**. Au premier lancement, le catalogue est initialisé depuis `src/data/products.ts`.

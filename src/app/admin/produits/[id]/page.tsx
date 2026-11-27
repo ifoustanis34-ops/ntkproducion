@@ -6,6 +6,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { requireAdmin } from "@/lib/admin/auth";
 import { readCatalogSync } from "@/lib/catalog/store";
 import { rangeLabels } from "@/lib/catalog/types";
+import { effectiveOptions } from "@/lib/catalog/options";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { PhotoManager } from "@/components/admin/PhotoManager";
 import { deleteProductAction } from "@/app/admin/actions";
@@ -25,7 +26,8 @@ async function EditProduct({ params, searchParams }: PageProps<"/admin/produits/
   await requireAdmin();
   const { id } = await params;
   const created = (await searchParams).cree === "1";
-  const product = readCatalogSync().products.find((p) => p.id === id);
+  const catalog = readCatalogSync();
+  const product = catalog.products.find((p) => p.id === id);
   if (!product) notFound();
 
   return (
@@ -52,8 +54,8 @@ async function EditProduct({ params, searchParams }: PageProps<"/admin/produits/
         )}
       </div>
 
-      <PhotoManager productId={product.id} photos={product.photos} colors={product.colors} dimensions={product.dimensions} />
-      <ProductForm key={product.updatedAt} product={product} />
+      <PhotoManager productId={product.id} photos={product.photos} groups={effectiveOptions(product, catalog.rangeOptions)} />
+      <ProductForm key={product.updatedAt} product={product} rangeOptions={catalog.rangeOptions} />
 
       <section className="rounded-3xl border border-red-200 bg-white p-5 sm:p-7">
         <h2 className="text-lg font-bold text-red-700">Supprimer ce produit</h2>

@@ -36,14 +36,33 @@ export type MediaImage = {
 };
 
 export type CatalogPhoto = MediaImage & {
-  /** Couleur illustrée par la photo (null = toutes couleurs) */
-  colorId: string | null;
-  /** Dimension illustrée par la photo (null = toutes dimensions) */
-  dimensionId: string | null;
+  /** Valeurs d'options illustrées par la photo (vide = photo générale, affichée pour tous les choix) */
+  valueIds: string[];
 };
 
-export type CatalogColor = { id: string; name: string; hex: string };
-export type CatalogDimension = { id: string; label: string };
+/** Une valeur proposée dans une option : « Blanc », « Acier noir », « Ø 150 cm »… */
+export type OptionValue = {
+  id: string;
+  label: string;
+  /** Teinte affichée (options de type « couleur ») */
+  hex?: string;
+  /** Précision affichée sous la valeur, ex. « 10 places » */
+  note?: string;
+};
+
+/** Saisie libre proposée en plus des valeurs : aucune, texte, ou longueur × largeur (× hauteur). */
+export type OptionCustom = "aucune" | "texte" | "dimensions";
+
+/** Une option à choisir : « Couleur de la bâche », « Structure », « Diamètre »… */
+export type OptionGroup = {
+  id: string;
+  name: string;
+  kind: "couleur" | "liste";
+  /** Le client doit faire un choix avant d'envoyer sa demande */
+  required: boolean;
+  custom: OptionCustom;
+  values: OptionValue[];
+};
 
 export type CatalogProduct = {
   id: string;
@@ -61,14 +80,19 @@ export type CatalogProduct = {
   /** Ordre d'affichage dans la gamme (croissant) */
   order: number;
   photos: CatalogPhoto[];
-  colors: CatalogColor[];
-  dimensions: CatalogDimension[];
-  /** Le visiteur peut saisir ses propres dimensions */
-  allowCustomDimensions: boolean;
+  /** Options propres à ce produit (en plus de celles de sa gamme) */
+  options: OptionGroup[];
+  /** Options de la gamme désactivées pour ce produit (ids) */
+  disabledRangeOptions: string[];
   updatedAt: string;
 };
 
-export type Catalog = { version: 1; products: CatalogProduct[] };
+export type Catalog = {
+  version: 2;
+  products: CatalogProduct[];
+  /** Options communes à tous les produits d'une gamme */
+  rangeOptions: Record<RangeId, OptionGroup[]>;
+};
 
 export function isRangeId(v: unknown): v is RangeId {
   return typeof v === "string" && (rangeIds as readonly string[]).includes(v);
