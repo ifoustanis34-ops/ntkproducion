@@ -7,9 +7,9 @@
  */
 
 export type PhoneNumber = {
-  /** Libellé affiché, ex. "+237 6 82 09 54 26" */
+  /** Libellé affiché, ex. "+237 6 93 74 92 10" */
   display: string;
-  /** Format E.164 sans espaces, ex. "+237682095426" */
+  /** Format E.164 sans espaces, ex. "+237693749210" */
   e164: string;
   /** Un numéro non vérifié n'est ni affiché, ni utilisé pour un lien tel: / WhatsApp. */
   verified: boolean;
@@ -20,22 +20,14 @@ export const contact = {
 
   phones: [
     {
-      display: "+237 6 82 09 54 26",
-      e164: "+237682095426",
+      display: "+237 6 93 74 92 10",
+      e164: "+237693749210",
       verified: true,
-    },
-    {
-      // Numéro transmis : "+237 93749210" — 8 chiffres après l'indicatif.
-      // Les numéros camerounais en comptent 9 : numéro probablement incomplet.
-      // À confirmer par le propriétaire avant publication (passer `verified` à true).
-      display: "+237 93749210",
-      e164: "+23793749210",
-      verified: false,
     },
   ] satisfies PhoneNumber[],
 
   /** Numéro WhatsApp (E.164 sans "+"), utilisé pour tous les liens wa.me. */
-  whatsapp: "237682095426" as string | null,
+  whatsapp: "237693749210" as string | null,
 
   location: {
     district: "Camp Tunisien",
