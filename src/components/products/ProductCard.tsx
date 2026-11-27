@@ -22,7 +22,8 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
   const images = variant === "catalog" ? product.photos.slice(0, 6) : main ? [main] : [];
   const wa = whatsappUrl(productQuoteMessage(product.messageLabel));
   const prestations = product.prestations.length ? product.prestations.map((p) => prestationLabels[p]).join(" · ") : null;
-  const configurable = product.colors.length > 0 || product.dimensions.length > 0;
+  // Dès qu'un choix existe (couleur, taille ou sur mesure), le bouton mène à la fiche où le client le fait.
+  const configurable = product.colors.length > 0 || product.dimensions.length > 0 || product.allowCustomDimensions;
   const badge = (
     <span className="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-[0.7rem] font-semibold tracking-wide text-navy-900 backdrop-blur">
       {rangeLabels[product.range]}
@@ -96,7 +97,7 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
             href={href}
             className={cn(buttonStyles({ variant: variant === "catalog" ? "primary" : "outline", size: "md" }), "mt-6 w-full")}
           >
-            Choisir couleur et dimensions
+            {product.colors.length > 0 ? "Choisir couleur et dimensions" : "Choisir les dimensions"}
           </Link>
         ) : (
           <a
