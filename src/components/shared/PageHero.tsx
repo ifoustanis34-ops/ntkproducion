@@ -4,13 +4,15 @@ import { ChevronRight } from "lucide-react";
 import { Photo } from "@/components/ui/photo";
 import { TrussLine } from "@/components/shared/TrussLine";
 import { getImage } from "@/data/gallery";
+import type { MediaImage } from "@/lib/catalog/types";
 import { breadcrumbJsonLd, JsonLd } from "@/lib/seo";
 
 type Props = {
   eyebrow: string;
   title: React.ReactNode;
   intro?: string;
-  image: string;
+  /** id d'une image de data/gallery.ts, ou image du catalogue */
+  image: string | MediaImage;
   /** Libellé et chemin de la page courante pour le fil d'Ariane */
   crumb: { label: string; path: string };
   /** Niveaux intermédiaires du fil d'Ariane (entre Accueil et la page courante) */
@@ -19,7 +21,7 @@ type Props = {
 };
 
 export function PageHero({ eyebrow, title, intro, image, crumb, parents = [], children }: Props) {
-  const img = getImage(image);
+  const img = typeof image === "string" ? getImage(image) : image;
   return (
     <section className="relative isolate overflow-hidden bg-navy-950 text-white">
       <JsonLd data={breadcrumbJsonLd([...parents, crumb])} />

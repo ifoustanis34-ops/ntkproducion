@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product } from "@/data/products";
-import { prestationLabels } from "@/data/products";
-import { categoryLabels, getImage } from "@/data/gallery";
+import type { CatalogProduct } from "@/lib/catalog/types";
+import { prestationLabels, rangeLabels } from "@/lib/catalog/types";
 import { productQuoteMessage, whatsappUrl } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/ui/brand-icons";
 import { buttonStyles } from "@/components/ui/button-link";
@@ -10,21 +9,23 @@ import { cn } from "@/lib/utils";
 import { ProductMedia } from "./ProductMedia";
 
 type Props = {
-  product: Product;
-  /** "catalog" : photos secondaires, disponibilité et type de prestation */
+  product: CatalogProduct;
+  /** "catalog" : photos secondaires, couleurs, dimensions et type de prestation */
   variant?: "compact" | "catalog";
   ctaLabel?: string;
 };
 
 /** Fiche produit — composant serveur ; seules les miniatures (catalogue) sont interactives. */
 export function ProductCard({ product, variant = "compact", ctaLabel = "Demander des informations" }: Props) {
-  const main = getImage(product.mainImage);
-  const images = variant === "catalog" ? [product.mainImage, ...product.secondaryImages].map(getImage) : [main];
+  const href = `/produits/${product.slug}`;
+  const main = product.photos[0];
+  const images = variant === "catalog" ? product.photos.slice(0, 6) : main ? [main] : [];
   const wa = whatsappUrl(productQuoteMessage(product.messageLabel));
   const prestations = product.prestations.length ? product.prestations.map((p) => prestationLabels[p]).join(" · ") : null;
+  const configurable = product.colors.length > 0 || product.dimensions.length > 0;
   const badge = (
     <span className="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-[0.7rem] font-semibold tracking-wide text-navy-900 backdrop-blur">
-      {categoryLabels[product.category]}
+      {rangeLabels[product.range]}
     </span>
   );
 
@@ -34,27 +35,39 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
         <ProductMedia images={images} productName={product.name} badge={badge} />
       ) : (
         <div className="relative aspect-[4/3] overflow-hidden bg-steel-100">
-          <Image
-            src={main.src}
-            alt={main.alt}
-            fill
-            sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
-            placeholder="blur"
-            blurDataURL={main.blurDataURL}
-            className="object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.05]"
-            style={main.focus ? { objectPosition: main.focus } : undefined}
-          />
+          {main && (
+            <Image
+              src={main.src}
+              alt={main.alt}
+              fill
+              sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
+              {...(main.blurDataURL ? { placeholder: "blur" as const, blurDataURL: main.blurDataURL } : {})}
+              className="object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.05]"
+              style={main.focus ? { objectPosition: main.focus } : undefined}
+            />
+          )}
           {badge}
         </div>
       )}
 
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="text-xl font-bold text-navy-900">
-          <Link href={`/produits/${product.slug}`} className="underline-offset-4 hover:text-royal-600 hover:underline">
+          <Link href={href} className="underline-offset-4 hover:text-royal-600 hover:underline">
             {product.name}
           </Link>
         </h3>
         <p className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-muted-foreground">{product.description}</p>
+
+        {product.colors.length > 0 && (
+          <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label="Couleurs disponibles">
+            {product.colors.slice(0, 8).map((c) => (
+              <li key={c.id} title={c.name} className="size-5 rounded-full border border-steel-300" style={{ background: c.hex }}>
+                <span className="sr-only">{c.name}</span>
+              </li>
+            ))}
+            {product.colors.length > 8 && <li className="text-xs text-muted-foreground">+{product.colors.length - 8}</li>}
+          </ul>
+        )}
 
         {variant === "catalog" && (
           <dl className="mt-5 grid grid-cols-2 gap-3 rounded-2xl bg-steel-50 p-4 text-sm">
@@ -63,8 +76,14 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
               <dd className="mt-0.5 font-semibold text-navy-900">{prestations ?? "À confirmer"}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">Disponibilité</dt>
-              <dd className="mt-0.5 font-semibold text-navy-900">À confirmer</dd>
+              <dt className="text-xs text-muted-foreground">Dimensions</dt>
+              <dd className="mt-0.5 font-semibold text-navy-900">
+                {product.dimensions.length
+                  ? `${product.dimensions.length} taille${product.dimensions.length > 1 ? "s" : ""}${product.allowCustomDimensions ? " + sur mesure" : ""}`
+                  : product.allowCustomDimensions
+                    ? "Sur mesure"
+                    : "Sur demande"}
+              </dd>
             </div>
           </dl>
         )}
@@ -72,14 +91,23 @@ export function ProductCard({ product, variant = "compact", ctaLabel = "Demander
           <p className="mt-4 text-xs font-semibold tracking-[0.14em] text-royal-600 uppercase">{prestations}</p>
         )}
 
-        <a
-          href={wa ?? "/contact#devis"}
-          {...(wa ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          className={cn(buttonStyles({ variant: variant === "catalog" ? "whatsapp" : "outline", size: "md" }), "mt-6 w-full")}
-        >
-          {wa && <WhatsAppIcon />}
-          {ctaLabel}
-        </a>
+        {configurable ? (
+          <Link
+            href={href}
+            className={cn(buttonStyles({ variant: variant === "catalog" ? "primary" : "outline", size: "md" }), "mt-6 w-full")}
+          >
+            Choisir couleur et dimensions
+          </Link>
+        ) : (
+          <a
+            href={wa ?? "/contact#devis"}
+            {...(wa ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            className={cn(buttonStyles({ variant: variant === "catalog" ? "whatsapp" : "outline", size: "md" }), "mt-6 w-full")}
+          >
+            {wa && <WhatsAppIcon />}
+            {ctaLabel}
+          </a>
+        )}
       </div>
     </article>
   );

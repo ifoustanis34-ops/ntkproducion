@@ -75,6 +75,24 @@ Le champ `price` est prévu mais volontairement absent : aucun prix n'est affich
 La v1 prépare un message WhatsApp (`src/lib/quote.ts`). Pour ajouter un envoi par e-mail ou vers
 un backend, créer un nouveau transport dans `prepareQuoteTransport` (ex. un `POST` vers une Route Handler).
 
+## Portail administrateur (/admin)
+
+Accessible sur `https://<domaine>/admin` (non indexé par Google). Un seul compte, défini sur le serveur
+dans `.env.production.local` : `ADMIN_USERNAME` (défaut `admin`) et `ADMIN_PASSWORD` (12 caractères minimum).
+Sans `ADMIN_PASSWORD`, le portail reste fermé.
+
+L'administrateur peut, pour chaque produit de chaque gamme :
+- créer / modifier / masquer / supprimer / réordonner le produit ;
+- définir les **couleurs** (nom + teinte) et les **dimensions** proposées, et autoriser le « sur mesure » ;
+- ajouter des **photos** (réduites dans le navigateur puis converties en WebP, nommées pour le référencement),
+  et associer chaque photo à une couleur et/ou une dimension.
+
+Côté visiteur, la fiche produit (`/produits/<slug>`) permet de choisir couleur, dimension (ou sur mesure) et quantité,
+puis prépare la demande de devis dans WhatsApp.
+
+Données : `NTK_DATA_DIR` (défaut `<projet>/.data`) contient `catalog.json` et `uploads/`. Ce dossier n'est pas
+dans Git : **le sauvegarder**. Au premier lancement, le catalogue est initialisé depuis `src/data/products.ts`.
+
 ## Structure
 
 ```

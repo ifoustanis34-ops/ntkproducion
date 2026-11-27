@@ -1,9 +1,17 @@
 import { ArrowLeft } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button-link";
 import { TrussLine } from "@/components/shared/TrussLine";
+import { Suspense } from "react";
+import { Header, HeaderView } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 export default function NotFound() {
   return (
+    <>
+    <Suspense fallback={<HeaderView pathname="" />}>
+        <Header />
+      </Suspense>
+    <main id="contenu" className="flex-1">
     <section className="relative flex min-h-[80svh] items-center overflow-hidden bg-navy-950 text-white">
       <TrussLine className="pointer-events-none absolute top-24 left-1/2 w-[90%] max-w-4xl -translate-x-1/2 text-white/15" />
       <div className="container-site relative pt-[var(--header-h)] text-center">
@@ -15,5 +23,8 @@ export default function NotFound() {
         </ButtonLink>
       </div>
     </section>
+    </main>
+    <Footer />
+    </>
   );
 }

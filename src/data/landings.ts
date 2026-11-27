@@ -1,4 +1,4 @@
-import type { GalleryCategory } from "./gallery";
+import type { RangeId } from "@/lib/catalog/types";
 
 /**
  * Pages d'activité optimisées pour le référencement (une page = une intention de recherche).
@@ -26,7 +26,7 @@ export type Landing = {
   offer: string[];
   sections: LandingSection[];
   /** Fiches produits associées */
-  productCategory?: GalleryCategory;
+  productCategory?: RangeId;
   /** Photos affichées quand aucune fiche produit n'existe encore */
   gallery?: string[];
   faq: { question: string; answer: string }[];
@@ -149,6 +149,7 @@ export const landings: Landing[] = [
         ],
       },
     ],
+    productCategory: "baches",
     gallery: ["chapiteau-evenement-tapis-rouge", "tente-pagode-interieur-drape", "tente-pagode-jaune", "chapiteau-parois-transparentes"],
     faq: [
       {

@@ -16,8 +16,13 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
 }
 
+/** Lit l'URL courante : à placer dans un <Suspense> (voir HeaderView pour le repli). */
 export function Header() {
-  const pathname = usePathname();
+  return <HeaderView pathname={usePathname()} />;
+}
+
+/** En-tête du site ; `pathname` sert uniquement à souligner l'entrée de menu active. */
+export function HeaderView({ pathname }: { pathname: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

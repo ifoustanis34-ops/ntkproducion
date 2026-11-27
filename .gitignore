@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 !.env.example
+
+# Catalogue et photos gérés depuis le portail admin (données du serveur, jamais versionnées)
+/.data/

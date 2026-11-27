@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import type { GalleryImage } from "@/data/gallery";
+import type { MediaImage } from "@/lib/catalog/types";
 import { cn } from "@/lib/utils";
 
 /** Photo principale + miniatures cliquables (fondu CSS à chaque changement). */
@@ -12,7 +12,7 @@ export function ProductMedia({
   badge,
   sizes = "(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw",
 }: {
-  images: GalleryImage[];
+  images: MediaImage[];
   productName: string;
   badge?: React.ReactNode;
   sizes?: string;
@@ -28,8 +28,7 @@ export function ProductMedia({
           alt={current.alt}
           fill
           sizes={sizes}
-          placeholder="blur"
-          blurDataURL={current.blurDataURL}
+          {...(current.blurDataURL ? { placeholder: "blur" as const, blurDataURL: current.blurDataURL } : {})}
           className={cn("object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.05]", active > 0 && "page-enter")}
           style={current.focus ? { objectPosition: current.focus } : undefined}
         />
@@ -42,7 +41,7 @@ export function ProductMedia({
             key={img.id}
             type="button"
             onClick={() => setActive(i)}
-            aria-label={`Afficher la photo ${i + 1} : ${img.title}`}
+            aria-label={`Afficher la photo ${i + 1} : ${img.alt}`}
             aria-pressed={i === active}
             className={cn(
               "relative size-12 shrink-0 overflow-hidden rounded-lg ring-2 ring-offset-2 transition-all",

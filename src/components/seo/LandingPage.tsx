@@ -10,7 +10,7 @@ import { Photo } from "@/components/ui/photo";
 import { Reveal } from "@/components/ui/reveal";
 import { getImage } from "@/data/gallery";
 import { getLanding } from "@/data/landings";
-import { products } from "@/data/products";
+import { getPublishedProducts } from "@/lib/catalog/store";
 import { articles } from "@/data/articles";
 import { JsonLd, pageMetadata, serviceJsonLd } from "@/lib/seo";
 
@@ -25,10 +25,10 @@ export function landingMetadata(slug: string): Metadata {
 }
 
 /** Page d'activité : contenu éditorial, fiches produits, FAQ, liens internes et devis. */
-export function LandingPage({ slug }: { slug: string }) {
+export async function LandingPage({ slug }: { slug: string }) {
   const l = getLanding(slug);
   const path = `/${l.slug}`;
-  const list = l.productCategory ? products.filter((p) => p.category === l.productCategory) : [];
+  const list = l.productCategory ? (await getPublishedProducts()).filter((p) => p.range === l.productCategory) : [];
   const related = l.related.map(getLanding);
   const relatedArticles = articles.filter((a) => l.articles.includes(a.slug));
 

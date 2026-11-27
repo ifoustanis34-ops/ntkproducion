@@ -3,9 +3,11 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button-link";
-import { featuredProducts } from "@/data/products";
+import { getPublishedProducts } from "@/lib/catalog/store";
 
-export function FeaturedProducts() {
+export async function FeaturedProducts() {
+  const featuredProducts = (await getPublishedProducts()).filter((p) => p.featured).slice(0, 6);
+  if (!featuredProducts.length) return null;
   return (
     <section aria-labelledby="produits-title" className="py-20 sm:py-28">
       <div className="container-site">

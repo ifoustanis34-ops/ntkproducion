@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  experimental: {
+    // Photos envoyées depuis le portail /admin (réduites à ~2 Mo par le navigateur avant l'envoi).
+    serverActions: { bodySizeLimit: "9mb" },
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 85],

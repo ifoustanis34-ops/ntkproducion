@@ -1,20 +1,19 @@
-import type { GalleryCategory } from "./gallery";
+import type { RangeId } from "@/lib/catalog/types";
 
 /**
  * Gammes de produits NTK Production (page Produits), dans l'ordre d'affichage.
  * - `id` sert d'ancre (/produits#<id>) : ne pas le modifier sans mettre à jour les liens.
- * - `productCategory` : fiches produits (data/products.ts) affichées sous la gamme.
+ * - les fiches produits du catalogue (portail /admin) sont affichées sous leur gamme (`id`).
  * - `image` : illustration utilisée quand la gamme n'a pas encore de fiche produit.
  */
 export type ProductRange = {
-  id: string;
+  id: RangeId;
   title: string;
   shortTitle: string;
   intro: string;
   items: string[];
   /** Formulation du message WhatsApp : « …devis concernant vos {quoteLabel}. » */
   quoteLabel: string;
-  productCategory?: GalleryCategory;
   image?: string;
   /** Pages d'activité détaillées (slugs de data/landings.ts) */
   landings: string[];
@@ -37,7 +36,6 @@ export const productRanges: ProductRange[] = [
     ],
     landings: ["chapiteaux-et-tentes"],
     quoteLabel: "chapiteaux et tentes événementielles",
-    productCategory: "chapiteaux",
   },
   {
     id: "structures-metalliques",
@@ -57,7 +55,6 @@ export const productRanges: ProductRange[] = [
     ],
     landings: ["construction-metallique", "hangars-metalliques"],
     quoteLabel: "hangars et structures métalliques",
-    productCategory: "structures-metalliques",
   },
   {
     id: "baches",
@@ -85,7 +82,6 @@ export const productRanges: ProductRange[] = [
     items: ["Tables rondes", "Tables rectangulaires", "Tables de cérémonie", "Tables de traiteur", "Mobilier de réception"],
     landings: ["mobilier-evenementiel"],
     quoteLabel: "tables et mobilier événementiel",
-    productCategory: "tables",
   },
   {
     id: "podiums",
@@ -95,6 +91,5 @@ export const productRanges: ProductRange[] = [
     items: ["Podiums de spectacle", "Estrades", "Plateformes événementielles", "Structures de scène"],
     landings: ["podiums-et-scenes"],
     quoteLabel: "podiums et structures de spectacle",
-    productCategory: "podiums",
   },
 ];

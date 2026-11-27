@@ -1,18 +1,15 @@
 import type { GalleryCategory } from "./gallery";
 
 /**
- * Catalogue produits.
+ * Catalogue initial (données de départ).
+ * Depuis le portail /admin, le catalogue est stocké sur le serveur (src/lib/catalog/store.ts) :
+ * ce fichier ne sert qu'à initialiser ce catalogue lors du premier lancement.
  * - Aucun prix n'est affiché tant qu'il n'a pas été communiqué (`price` reste absent).
  * - `prestations` : uniquement les modalités confirmées par le brief. Liste vide = « à confirmer ».
  * - Pour ajouter un produit : ajouter une entrée (les images référencent les `id` de data/gallery.ts).
  */
 
-export type Prestation = "fabrication" | "vente";
-
-export const prestationLabels: Record<Prestation, string> = {
-  fabrication: "Fabrication",
-  vente: "Vente",
-};
+import type { Prestation } from "@/lib/catalog/types";
 
 export type Product = {
   slug: string;
@@ -193,9 +190,3 @@ export const products: Product[] = [
     uses: ["Hangars industriels et de stockage", "Hangars commerciaux", "Abris et auvents", "Structures sur mesure"],
   },
 ];
-
-export const featuredProducts = products.filter((p) => p.featured);
-
-export function getProduct(slug: string) {
-  return products.find((p) => p.slug === slug);
-}

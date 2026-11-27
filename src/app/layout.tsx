@@ -3,12 +3,6 @@ import { Manrope } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
-import { JsonLd, localBusinessJsonLd } from "@/lib/seo";
-import { RevealScript } from "@/components/layout/RevealScript";
-import { Analytics } from "@/components/analytics/Analytics";
 
 // Archivo (licence OFL) en chasse élargie 112 % : rappelle le lettrage large et géométrique du logo.
 // Instance statique de largeur (axe wdth figé à 112) et graisses 500–900, sous-ensemble latin :
@@ -70,17 +64,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fr" className={`${display.variable} ${body.variable}`} suppressHydrationWarning>
-      <body className="flex min-h-dvh flex-col">
-        <RevealScript />
-        <JsonLd data={localBusinessJsonLd()} />
-          <Header />
-          <main id="contenu" className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <WhatsAppFloat />
-          <Analytics />
-      </body>
+      <body className="flex min-h-dvh flex-col">{children}</body>
     </html>
   );
 }

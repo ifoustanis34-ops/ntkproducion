@@ -7,9 +7,9 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ContactCTA } from "@/components/home/ContactCTA";
-import { products } from "@/data/products";
+import { getPublishedProducts } from "@/lib/catalog/store";
+import { rangeLabels } from "@/lib/catalog/types";
 import { productRanges } from "@/data/ranges";
-import { categoryLabels } from "@/data/gallery";
 import { Photo } from "@/components/ui/photo";
 import { WhatsAppCta } from "@/components/shared/whatsapp-cta";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,8 @@ export const metadata: Metadata = pageMetadata({
   image: "/images/tables/table-serpentine-modules.jpg",
 });
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getPublishedProducts();
   return (
     <>
       <JsonLd
@@ -40,9 +41,9 @@ export default function ProductsPage() {
               "@type": "Product",
               name: p.name,
               description: p.description,
-              image: absoluteUrl(getImage(p.mainImage).src),
+              ...(p.photos[0] ? { image: absoluteUrl(p.photos[0].src) } : {}),
               brand: { "@type": "Brand", name: "NTK Production" },
-              category: categoryLabels[p.category],
+              category: rangeLabels[p.range],
             },
           })),
         }}
@@ -72,7 +73,7 @@ export default function ProductsPage() {
       </nav>
 
       {productRanges.map((g, idx) => {
-        const list = g.productCategory ? products.filter((p) => p.category === g.productCategory) : [];
+        const list = products.filter((p) => p.range === g.id);
         const illustration = !list.length && g.image ? getImage(g.image) : null;
         const quote = `Bonjour NTK Production, je souhaite obtenir un devis concernant vos ${g.quoteLabel}.`;
         return (

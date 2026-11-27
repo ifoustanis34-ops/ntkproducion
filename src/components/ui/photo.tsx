@@ -1,9 +1,9 @@
 import Image from "next/image";
-import type { GalleryImage } from "@/data/gallery";
+import type { MediaImage } from "@/lib/catalog/types";
 import { cn } from "@/lib/utils";
 
 type PhotoProps = {
-  image: GalleryImage;
+  image: MediaImage;
   sizes: string;
   className?: string;
   /** Remplit le conteneur parent (qui doit être position: relative) */
@@ -20,8 +20,7 @@ export function Photo({ image, sizes, className, fill = true, preload, quality }
       alt={image.alt}
       fill
       sizes={sizes}
-      placeholder="blur"
-      blurDataURL={image.blurDataURL}
+      {...(image.blurDataURL ? { placeholder: "blur" as const, blurDataURL: image.blurDataURL } : {})}
       className={cn("object-cover", className)}
       style={image.focus ? { objectPosition: image.focus } : undefined}
       preload={preload}
@@ -34,8 +33,7 @@ export function Photo({ image, sizes, className, fill = true, preload, quality }
       width={image.width}
       height={image.height}
       sizes={sizes}
-      placeholder="blur"
-      blurDataURL={image.blurDataURL}
+      {...(image.blurDataURL ? { placeholder: "blur" as const, blurDataURL: image.blurDataURL } : {})}
       className={className}
       preload={preload}
       quality={quality}
